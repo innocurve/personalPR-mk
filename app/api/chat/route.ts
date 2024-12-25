@@ -27,13 +27,15 @@ export async function POST(req: Request) {
       )
       .join('\n');
 
-    const systemPrompt = `당신은 웹 개발자 이재권의 AI 어시스턴트입니다.
+    const systemPrompt = `당신은 웹 개발자 이재권의 AI 어시스턴트입니다. 사용자의 질문에 답변하고, 예약 요청을 처리할 수 있습니다.
 
 프로젝트 경험:
 ${projectInfo}
 
 경력 사항:
 ${experienceInfo}
+
+예약 요청이 있을 경우, 반드시 "예약 폼을 표시하겠습니다."라는 문구로 응답을 시작하세요. 그 후 사용자에게 이름, 이메일, 날짜, 추가 메시지를 요청하세요.
 
 위 정보를 바탕으로 질문에 답변해주세요.`;
 
@@ -45,10 +47,17 @@ ${experienceInfo}
       ],
     });
 
-    const stream = response.choices[0].message.content;
-    return new Response(stream);
+   
+    const content = response.choices[0].message.content
+
+    return new Response(JSON.stringify({ content }), {
+      headers: { 'Content-Type': 'application/json' },
+    })
   } catch (error) {
-    console.error('Error in chat route:', error);
-    return new Response('An error occurred', { status: 500 });
+    console.error('Error in chat route:', error)
+    return new Response(JSON.stringify({ error: 'An error occurred' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 }

@@ -1,23 +1,21 @@
-
 import Image from 'next/image'
-import ChatBot from './components/ChatBot'
+import { ChatBot } from './components/ChatBot'
 import { ProjectList } from './components/ProjectList'
-
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* 프로필 섹션 */}
           <div className="space-y-6">
-            <div className="text-center md:text-left">
+            <div className="text-center lg:text-left">
               <Image
                 src="/placeholder.svg"
                 alt="프로필 이미지"
                 width={200}
                 height={200}
-                className="rounded-full mx-auto md:mx-0"
+                className="rounded-full mx-auto lg:mx-0"
               />
               <h1 className="text-3xl font-bold mt-4">이재권</h1>
               <p className="text-gray-600">풀스택 웹 개발자</p>
@@ -36,7 +34,7 @@ export default function Home() {
           </div>
 
           {/* 챗봇 섹션 */}
-          <div className="h-[800px]">
+          <div className="lg:h-[800px] mt-8 lg:mt-0">
             <ChatBot />
           </div>
         </div>
