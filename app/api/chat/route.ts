@@ -40,7 +40,7 @@ ${experienceInfo}
 위 정보를 바탕으로 질문에 답변해주세요.`;
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: systemPrompt },
         ...messages,
