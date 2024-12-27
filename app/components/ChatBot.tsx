@@ -77,7 +77,7 @@ export function ChatBot() {
   return (
     <Card className="w-full h-full flex flex-col">
       <CardHeader>
-        <CardTitle>홍길동 AI 어시스턴트</CardTitle>
+        <CardTitle>이재권 AI 어시스턴트</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow overflow-y-auto">
         {messages.map((message, index) => (
