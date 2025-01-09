@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-import { ReservationForm } from "./ReservationFrom"
+import { useState, useEffect, useRef } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { ReservationForm } from "./ReservationForm";
 
 type Message = {
   role: 'user' | 'assistant';
@@ -12,67 +12,66 @@ type Message = {
 }
 
 export function ChatBot() {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput] = useState('')
-  const [showReservationForm, setShowReservationForm] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [showReservationForm, setShowReservationForm] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(scrollToBottom, [messages]);
 
   const handleSendMessage = async () => {
-    if (!input.trim()) return
+    if (!input.trim()) return;
 
-    const updatedMessages: Message[] = [...messages, { role: 'user', content: input }]
-    setMessages(updatedMessages)
-    setInput('')
+    const updatedMessages: Message[] = [...messages, { role: 'user', content: input }];
+    setMessages(updatedMessages);
+    setInput('');
 
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: updatedMessages }),
-      })
+      });
 
       if (response.ok) {
-        const data = await response.json()
-        setMessages([...updatedMessages, { role: 'assistant', content: data.content }])
+        const data = await response.json();
+        setMessages([...updatedMessages, { role: 'assistant', content: data.content }]);
 
-        // 예약 의도 확인
         if (data.content.toLowerCase().includes('예약 폼을 표시하겠습니다')) {
-          setShowReservationForm(true)
+          setShowReservationForm(true);
         }
       } else {
-        throw new Error('API 응답이 실패했습니다.')
+        throw new Error('API 응답이 실패했습니다.');
       }
     } catch (error) {
-      console.error('Error in chat:', error)
-      setMessages([...updatedMessages, { role: 'assistant', content: '죄송합니다. 오류가 발생했습니다. 다시 시도해 주세요.' }])
+      console.error('Error in chat:', error);
+      setMessages([...updatedMessages, { role: 'assistant', content: '죄송합니다. 오류가 발생했습니다. 다시 시도해 주세요.' }]);
     }
-  }
+  };
 
-  const handleReservation = async (reservationData: { name: string; email: string; date: string; message: string }) => {
+  const handleReservation = async (reservationData: { name: string; email: string; phoneNumber: string; date: string; message: string }) => {
     try {
       const response = await fetch('/api/reservation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reservationData),
-      })
+      });
 
       if (response.ok) {
-        setMessages([...messages, { role: 'assistant', content: '예약이 완료되었습니다. 감사합니다!' }])
-        setShowReservationForm(false)
+        setMessages([...messages, { role: 'assistant', content: '예약이 완료되었습니다. 감사합니다!' }]);
+        setShowReservationForm(false);
       } else {
-        throw new Error('예약 API 응답이 실패했습니다.')
+        throw new Error('예약 API 응답이 실패했습니다.');
       }
     } catch (error) {
-      console.error('Reservation error:', error)
-      setMessages([...messages, { role: 'assistant', content: '예약 중 오류가 발생했습니다. 다시 시도해주세요.' }])
+      console.error('Reservation error:', error);
+      setMessages([...messages, { role: 'assistant', content: '예약 중 오류가 발생했습니다. 다시 시도해주세요.' }]);
     }
-  }
+  };
 
   return (
     <Card className="w-full h-full flex flex-col">
@@ -89,9 +88,9 @@ export function ChatBot() {
         ))}
         <div ref={messagesEndRef} />
       </CardContent>
-      <CardFooter className="flex-shrink-0">
+      <CardFooter>
         {showReservationForm ? (
-          <ReservationForm 
+          <ReservationForm
             onSubmit={handleReservation}
             onCancel={() => setShowReservationForm(false)}
           />
@@ -101,13 +100,12 @@ export function ChatBot() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="메시지를 입력하세요..."
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
             />
             <Button onClick={handleSendMessage} className="ml-2">전송</Button>
           </div>
         )}
       </CardFooter>
     </Card>
-  )
+  );
 }
-

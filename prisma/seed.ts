@@ -20,8 +20,17 @@ async function main() {
       description: '풀스택 개발 및 팀 리딩',
     },
   })
+    // Owner 데이터 추가
+    const owner = await prisma.owner.create({
+      data: {
+        name: '이재권',
+        age: 30,
+        hobbies: ['코딩', '독서', '여행'],
+        values: '지속적인 학습과 혁신을 통한 가치 창출',
+      },
+    })
 
-  console.log({ project, experience })
+  console.log({ project, experience, owner })
 }
 
 main()

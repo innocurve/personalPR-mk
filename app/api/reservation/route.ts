@@ -1,44 +1,79 @@
-import { NextResponse } from 'next/server';
-import  prisma  from '@/lib/prisma';
-import { sendSMS } from '@/lib/sendSMS';
+import { PrismaClient } from '@prisma/client';
+import { sendAlimtalk } from '@/lib/sendAlimTalk';
+
+
+const prisma = new PrismaClient();
+
 
 export async function POST(req: Request) {
   try {
-    const { name, email, date, message } = await req.json();
-
+    const { name, email, phoneNumber, date, message } = await req.json();
+    const reservationDate = new Date(date);
+    const formattedDate = reservationDate.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+    });
     const reservation = await prisma.reservation.create({
       data: {
         name,
         email,
-        date: new Date(date),
+        phoneNumber,
+        date: reservationDate,
         message,
       },
     });
 
-    // PR 사이트 주인의 전화번호
-    const ownerPhone = process.env.OWNER_PHONE_NUMBER;
-    
-    if (!ownerPhone) {
-      throw new Error('OWNER_PHONE_NUMBER is not set in environment variables');
+     // 고객에게 알림톡 발송
+     if (phoneNumber) {
+      try {
+        await sendAlimtalk({
+          to: phoneNumber,
+          from: process.env.SOLAPI_SENDER_NUMBER!,
+          templateId: process.env.CUSTOMER_TEMPLATE_ID!,
+          variables: {
+            '#{name}': name,
+            '#{date}': formattedDate,
+            '#{message}': message || '없음',
+          },
+        });
+      } catch (error) {
+        console.error('고객에게 알림톡 발송 실패:', error);
+      }
     }
-    
-    // SMS 내용 구성
-    const smsContent = `[예약 알림] 새로운 예약이 있습니다.
-이름: ${name}
-이메일: ${email}
-날짜: ${new Date(date).toLocaleString('ko-KR')}
-메시지: ${message}`;
-    
-    // SMS 발송
-    await sendSMS(ownerPhone, smsContent);
 
-    return NextResponse.json({ success: true, reservation });
-  } catch (error: unknown) {
-    console.error('Reservation error:', error);
-    if (error instanceof Error) {
-      return NextResponse.json({ success: false, error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ success: false, error: 'An unknown error occurred' }, { status: 500 });
+   
+    // 소유자에게 알림톡 발송
+   const ownerPhoneNumber = process.env.OWNER_PHONE_NUMBER;
+   if (ownerPhoneNumber) {
+     try {
+       await sendAlimtalk({
+         to: ownerPhoneNumber,
+         from: process.env.SOLAPI_SENDER_NUMBER!,
+         templateId: process.env.OWNER_TEMPLATE_ID!,
+         variables: {
+          '#{name}': name,
+          '#{email}': email,
+          '#{phonenumber}': phoneNumber,
+          '#{date}': formattedDate,
+          '#{message}': message || '없음',
+         },
+       });
+     } catch (error) {
+       console.error('소유자에게 알림톡 발송 실패:', error);
+     }
+   }
+
+
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error('예약 API 오류:', error);
+    return new Response(JSON.stringify({ error: '예약 처리 중 오류 발생' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
-

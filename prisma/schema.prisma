@@ -28,12 +28,22 @@ model Experience {
 }
 
 model Reservation {
+  id              String   @id @default(cuid())
+  name            String
+  email           String
+  phoneNumber     String
+  date            DateTime
+  message         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Owner {
   id        String   @id @default(cuid())
   name      String
-  email     String
-  date      DateTime
-  message   String?
+  age       Int
+  hobbies   String[]
+  values    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
