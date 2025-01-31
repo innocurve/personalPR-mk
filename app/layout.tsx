@@ -1,45 +1,59 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import Image from 'next/image'
-import './globals.css'
+import type { Metadata } from "next";
+import localFont from "next/font/local";
+import "./globals.css";
+import { LanguageProvider } from './contexts/LanguageContext';
 
-const inter = Inter({ subsets: ['latin'] })
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
 
 export const metadata: Metadata = {
-  title: '홍길동의 개인 PR 사이트',
-  description: '웹 개발자 홍길동의 포트폴리오 및 챗봇',
-}
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+  title: "InnoCard",
+  description: "InnoCard - 혁신적인 전자 명함 솔루션",
+  icons: {
+    icon: '/favicon.ico',
+  },
+  openGraph: {
+    title: "InnoCard",
+    description: "InnoCard - 혁신적인 전자 명함 솔루션",
+    type: "website",
+    images: [{
+      url: '/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'InnoCard'
+    }]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'INNOCURVE',
+    description: 'INNOCURVE - AI 기반 디지털 혁신 기업',
+    images: ['/images/og-image.png'],
+  },
+};
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="ko">
-      <body className={`${inter.className} bg-background text-foreground`}>
-        <header className="bg-white shadow-md">
-          <div className="container mx-auto px-6 py-4 flex items-center">
-            <Image
-              src="/placeholder.svg"
-              alt="프로필 이미지"
-              width={50}
-              height={50}
-              className="rounded-full mr-4"
-            />
-            <h1 className="text-2xl font-bold text-gray-800">이재권의 PR 사이트</h1>
-          </div>
-        </header>
-        <main className="container mx-auto px-6 py-8">
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <LanguageProvider>
           {children}
-        </main>
-        <footer className="bg-white shadow-md mt-8">
-          <div className="container mx-auto px-6 py-4 text-center text-gray-600">
-            © 2024 이재권. All rights reserved.
-          </div>
-        </footer>
+        </LanguageProvider>
       </body>
     </html>
-  )
+  );
 }
-

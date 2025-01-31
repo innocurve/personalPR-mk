@@ -47,3 +47,22 @@ model Owner {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Other {
+  id          String   @id @default(cuid())
+  title       String
+  content     String   @db.Text  // PDF 내용이나 이미지 설명
+  fileType    String   // "pdf" 또는 "image"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PdfChunk {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  keywords  String[]
+  embedding Json?    // Vector storage
+  fileName  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

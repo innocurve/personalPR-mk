@@ -1,9 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
-    // Add any other Next.js config options here
-  }
   
-  module.exports = nextConfig
-  
-  
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'hebbkx1anhila5yf.public.blob.vercel-storage.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+    domains: ['hebbkx1anhila5yf.public.blob.vercel-storage.com'],
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb'
+    }
+  },
+  serverExternalPackages: ['pdf-parse']
+}
+
+module.exports = nextConfig 

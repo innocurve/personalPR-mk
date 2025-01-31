@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { FileType } from 'lucide-react'
 
 const prisma = new PrismaClient()
 
@@ -29,8 +30,9 @@ async function main() {
         values: '지속적인 학습과 혁신을 통한 가치 창출',
       },
     })
+    
 
-  console.log({ project, experience, owner })
+  console.log({ project, experience, owner})
 }
 
 main()
