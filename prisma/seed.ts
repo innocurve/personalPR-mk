@@ -28,6 +28,7 @@ async function main() {
         age: 30,
         hobbies: ['코딩', '독서', '여행'],
         values: '지속적인 학습과 혁신을 통한 가치 창출',
+      
       },
     })
     

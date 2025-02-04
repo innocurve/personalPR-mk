@@ -44,6 +44,8 @@ model Owner {
   age       Int
   hobbies   String[]
   values    String
+  country   String?  // null 허용
+  birth     String?  // null 허용
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

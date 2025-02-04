@@ -1,67 +1,17 @@
 import { NextRequest } from 'next/server';
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
 import pdf from 'pdf-parse';
 import prisma from '@/lib/prisma';
+import { bucket } from '@/lib/firebase-admin';
+import { splitIntoChunks, extractKeywords } from '@/lib/pdfUtils';
 
 // Route Segment Config
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-// 텍스트를 청크로 나누는 함수
-function splitIntoChunks(text: string, maxChunkSize: number = 1000): string[] {
-  const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
-  const chunks: string[] = [];
-  let currentChunk = '';
-
-  for (const sentence of sentences) {
-    if ((currentChunk + sentence).length > maxChunkSize && currentChunk.length > 0) {
-      chunks.push(currentChunk.trim());
-      currentChunk = '';
-    }
-    currentChunk += sentence;
-  }
-  
-  if (currentChunk.length > 0) {
-    chunks.push(currentChunk.trim());
-  }
-
-  return chunks;
-}
-
-// 키워드 추출 함수 (간단한 버전)
-function extractKeywords(text: string): string[] {
-  // 불용어 제거 및 빈도수 기반 키워드 추출
-  const stopWords = new Set(['이', '그', '저', '것', '수', '등', '및', '를', '이다', '입니다', '했다', '했습니다']);
-  const words = text.split(/[\s,.]+/).filter(word => 
-    word.length > 1 && !stopWords.has(word)
-  );
-  
-  // 빈도수 계산
-  const frequency: {[key: string]: number} = {};
-  words.forEach(word => {
-    frequency[word] = (frequency[word] || 0) + 1;
-  });
-  
-  // 상위 10개 키워드 반환
-  return Object.entries(frequency)
-    .sort(([,a], [,b]) => b - a)
-    .slice(0, 10)
-    .map(([word]) => word);
-}
-
 // HTTP Methods
 export async function POST(req: Request) {
   try {
     console.log('[API] Upload endpoint called');
-
-    // 디렉토리 존재 여부 확인 및 생성
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
-    try {
-      await writeFile(join(uploadDir, '.keep'), '');
-    } catch (error) {
-      console.log('[API] Creating uploads directory');
-    }
 
     const formData = await req.formData();
     console.log('[API] FormData received');
@@ -97,6 +47,26 @@ export async function POST(req: Request) {
     const buffer = Buffer.from(bytes);
     console.log('[API] File converted to buffer');
 
+    // Firebase Storage에 업로드
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+    const filename = `${uniqueSuffix}-${file.name}`;
+    const fileRef = bucket.file(`pdfs/${filename}`);
+    
+    await fileRef.save(buffer, {
+      metadata: {
+        contentType: file.type,
+      },
+    });
+
+    // 파일의 공개 URL 생성
+    const [url] = await fileRef.getSignedUrl({
+      action: 'read',
+      expires: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7일 동안 유효
+    });
+
+    console.log('[API] File uploaded to Firebase Storage:', url);
+
+    // PDF 텍스트 추출
     const data = await pdf(buffer);
     const text = data.text;
     console.log('[API] Text extracted from PDF, length:', text.length);
@@ -120,19 +90,12 @@ export async function POST(req: Request) {
     );
     console.log(`[API] Saved ${savedChunks.length} chunks to database`);
 
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-    const filename = `${uniqueSuffix}-${file.name}`;
-    const filepath = join(uploadDir, filename);
-
-    await writeFile(filepath, buffer);
-    console.log('[API] File saved:', filepath);
-
     // 첫 번째 청크만 미리보기로 반환
     return new Response(JSON.stringify({
       success: true,
       text: chunks[0] + (chunks.length > 1 ? '...' : ''),
       filename: file.name,
-      fileUrl: `/uploads/${filename}`,
+      fileUrl: url,
       totalChunks: chunks.length
     }));
   } catch (error) {
