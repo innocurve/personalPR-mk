@@ -1,6 +1,9 @@
-module.exports = {
-  extends: ['next/core-web-vitals'],
-  rules: {
-    // 필요한 규칙들을 여기에 추가
-  }
-} 
+const { FlatCompat } = require('@eslint/eslintrc');
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
+
+module.exports = [
+  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+];
