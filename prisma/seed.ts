@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+//import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 
-
-const prisma = new PrismaClient()
+//const prisma = new PrismaClient()
 
 async function main() {
   // Add your seeding logic here
