@@ -17,7 +17,10 @@ const nextConfig = {
       bodySizeLimit: '10mb'
     }
   },
-  serverExternalPackages: ['pdf-parse']
+  serverExternalPackages: ['pdf-parse'],
+  typescript: {
+    ignoreBuildErrors: false
+  }
 }
 
 module.exports = nextConfig 
