@@ -1,21 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/app/utils/supabase';
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
 export async function GET(
   request: NextRequest,
-  context: Props
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const id = (await params).id
+  
   try {
     const { data: gallery, error } = await supabase
       .from('gallery')
       .select('*')
-      .eq('id', context.params.id)
+      .eq('id', id)
       .single();
 
     if (error) throw error;
