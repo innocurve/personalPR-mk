@@ -13,6 +13,19 @@ interface ScoredChunk {
   score: number;
 }
 
+interface Project {
+  title: string;
+  description: string;
+  techStack: string[];
+}
+
+interface Experience {
+  company: string;
+  position: string;
+  period: string;
+  description: string;
+}
+
 // 키워드 기반 PDF 청크 검색 함수
 async function searchRelevantChunks(question: string): Promise<string> {
   const keywords = question
@@ -84,11 +97,11 @@ export async function POST(req: Request) {
     ]);
 
     const projectInfo = projects
-      .map(p => `- ${p.title}: ${p.description} (기술 스택: ${p.techStack.join(', ')})`)
+      .map((p: Project) => `- ${p.title}: ${p.description} (기술 스택: ${p.techStack.join(', ')})`)
       .join('\n');
 
     const experienceInfo = experiences
-      .map(e => `- ${e.company}의 ${e.position} (${e.period})\n  ${e.description}`)
+      .map((e: Experience) => `- ${e.company}의 ${e.position} (${e.period})\n  ${e.description}`)
       .join('\n');
 
     const ownerInfo = owner

@@ -61,7 +61,8 @@ model Other {
 
 model PdfChunk {
   id        String   @id @default(cuid())
-  content   String   @db.Text
+  content   String
+  metadata  Json?
   keywords  String[]
   embedding Json?    // Vector storage
   fileName  String
