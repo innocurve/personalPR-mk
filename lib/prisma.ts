@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '.prisma/client';
+import { PrismaClient } from '.prisma/client';
 
 // 전역 변수를 사용하여 Prisma Client 관리
 const globalForPrisma = global as unknown as { prisma: PrismaClient | undefined };

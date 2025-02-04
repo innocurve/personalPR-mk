@@ -1,9 +1,8 @@
-//import { PrismaClient } from '@prisma/client';
-import prisma from '@/lib/prisma';
+import { PrismaClient } from '.prisma/client';
 import { sendAlimtalk } from '@/lib/sendAlimTalk';
 
 
-//const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 
 export async function POST(req: Request) {
