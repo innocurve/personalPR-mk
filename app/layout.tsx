@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     description: "InnoCard - 혁신적인 전자 명함 솔루션",
     type: "website",
     images: [{
-      url: '/og-image.png',
+      url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/og-image.png`,
       width: 1200,
       height: 630,
       alt: 'InnoCard'
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'INNOCURVE',
     description: 'INNOCURVE - AI 기반 디지털 혁신 기업',
-    images: ['/images/og-image.png'],
+    images: [`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/og-image.png`],
   },
 };
 
