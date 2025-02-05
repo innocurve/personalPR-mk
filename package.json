@@ -29,6 +29,7 @@
     "openai": "^4.82.0",
     "openai-edge": "^1.2.2",
     "pdf-parse": "^1.1.1",
+    "pdf.js-extract": "^0.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "solapi": "^5.3.1",
