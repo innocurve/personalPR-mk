@@ -1,6 +1,5 @@
 import { OpenAI } from 'openai';
-import prisma from '@/lib/prisma';
-import { PdfChunk } from '@prisma/client';
+import { supabase } from '@/app/utils/supabase';
 import { stopWords } from '@/lib/pdfUtils';
 
 // OpenAI 인스턴스 생성
@@ -8,15 +7,21 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
+// 타입 정의
 interface ScoredChunk {
   content: string;
   score: number;
 }
 
+interface PdfChunk {
+  content: string;
+  keywords: string[];
+}
+
 interface Project {
   title: string;
   description: string;
-  techStack: string[];
+  tech_stack: string[]; // Supabase에서는 snake_case를 사용
 }
 
 interface Experience {
@@ -24,6 +29,15 @@ interface Experience {
   position: string;
   period: string;
   description: string;
+}
+
+interface Owner {
+  name: string;
+  age: number;
+  hobbies: string[];
+  values: string;
+  country?: string;
+  birth?: string;
 }
 
 // 키워드 기반 PDF 청크 검색 함수
@@ -35,19 +49,17 @@ async function searchRelevantChunks(question: string): Promise<string> {
   if (keywords.length === 0) return '';
 
   try {
-    const chunks = await prisma.pdfChunk.findMany({
-      where: {
-        OR: keywords.map(word => ({
-          OR: [
-            { content: { contains: word } },
-            { keywords: { has: word } }
-          ],
-        })),
-      },
-    });
+    const { data: chunks, error } = await supabase
+      .from('pdf_chunks')
+      .select('*')
+      .or(keywords.map(word => 
+        `content.ilike.%${word}%,keywords.cs.{${word}}`
+      ).join(','));
 
-    // 키워드 관련성 점수 계산
-    const scoredChunks: ScoredChunk[] = chunks.map((chunk: PdfChunk) => {
+    if (error) throw error;
+
+    // 점수 계산 로직
+    const scoredChunks = (chunks || []).map((chunk: PdfChunk) => {
       let score = 0;
       const lowerContent = chunk.content.toLowerCase();
       
@@ -56,7 +68,7 @@ async function searchRelevantChunks(question: string): Promise<string> {
         if (lowerContent.includes(keywordLower)) {
           score += 2;
         }
-        if (chunk.keywords.some((k: string) => k.toLowerCase() === keywordLower)) {
+        if (chunk.keywords?.some(k => k.toLowerCase() === keywordLower)) {
           score += 1;
         }
       });
@@ -64,7 +76,6 @@ async function searchRelevantChunks(question: string): Promise<string> {
       return { content: chunk.content, score };
     });
 
-    // 점수 순으로 정렬하여 상위 2개 선택
     const topChunks = scoredChunks
       .sort((a, b) => b.score - a.score)
       .slice(0, 2);
@@ -89,18 +100,18 @@ export async function POST(req: Request) {
     const { messages } = body;
     const lastUserMessage = messages.findLast((msg: any) => msg.role === 'user')?.content || '';
 
-    // Prisma에서 기본 정보 가져오기
-    const [projects, experiences, owner] = await Promise.all([
-      prisma.project.findMany(),
-      prisma.experience.findMany(),
-      prisma.owner.findFirst(),
+    // Supabase 쿼리로 데이터 가져오기
+    const [{ data: projects }, { data: experiences }, { data: owner }] = await Promise.all([
+      supabase.from('projects').select('*'),
+      supabase.from('experiences').select('*'),
+      supabase.from('owners').select('*').single()
     ]);
 
-    const projectInfo = projects
-      .map((p: Project) => `- ${p.title}: ${p.description} (기술 스택: ${p.techStack.join(', ')})`)
+    const projectInfo = (projects || [])
+      .map((p: Project) => `- ${p.title}: ${p.description} (기술 스택: ${p.tech_stack.join(', ')})`)
       .join('\n');
 
-    const experienceInfo = experiences
+    const experienceInfo = (experiences || [])
       .map((e: Experience) => `- ${e.company}의 ${e.position} (${e.period})\n  ${e.description}`)
       .join('\n');
 
