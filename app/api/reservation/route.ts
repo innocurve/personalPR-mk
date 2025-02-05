@@ -1,8 +1,8 @@
-import { PrismaClient } from '.prisma/client';
+
 import { sendAlimtalk } from '@/lib/sendAlimTalk';
 
 
-const prisma = new PrismaClient();
+
 
 
 export async function POST(req: Request) {
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
       day: 'numeric',
       weekday: 'long',
     });
-    const reservation = await prisma.reservation.create({
+   /* const reservation = await prisma.reservation.create({
       data: {
         name,
         email,
@@ -23,9 +23,10 @@ export async function POST(req: Request) {
         date: reservationDate,
         message,
       },
-    });
+    });*/
 
      // 고객에게 알림톡 발송
+
      if (phoneNumber) {
       try {
         await sendAlimtalk({
