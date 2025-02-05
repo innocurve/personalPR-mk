@@ -198,15 +198,7 @@ export default function ChatPage() {
       <div className={`border-b ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'}`}>
         <div className="max-w-screen-xl mx-auto px-4">
           <div className="flex items-center justify-between py-4">
-            <Link href="/" className="flex items-center">
-              <Image
-                src="/logo.png"
-                alt="InnocurveLogo"
-                width={120}
-                height={30}
-                priority
-              />
-            </Link>
+        
             <Navigation language={language} />
           </div>
         </div>
