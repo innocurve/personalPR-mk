@@ -107,11 +107,12 @@ export default function ChatPage() {
   }
 
   const clearMessages = () => {
-    setMessages([{
-      role: 'assistant',
+    const initialMessage: Message = {
+      role: 'assistant' as const,  // 타입을 명시적으로 'assistant'로 지정
       content: initialMessages[language as keyof typeof initialMessages] || initialMessages.ko
-    }])
-    localStorage.removeItem('chatMessages')
+    };
+    setMessages([initialMessage]);
+    localStorage.setItem('chatMessages', JSON.stringify([initialMessage]));
   }
 
   const toggleDarkMode = () => {

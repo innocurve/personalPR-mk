@@ -1,8 +1,10 @@
 import { NextRequest } from 'next/server';
-import pdf from 'pdf-parse';
+import { PDFExtract } from 'pdf.js-extract';
 import { supabase } from '@/app/utils/supabase';
 import { bucket } from '@/lib/firebase-admin';
 import { splitIntoChunks, extractKeywords } from '@/lib/pdfUtils';
+
+const pdfExtract = new PDFExtract();
 
 // Route Segment Config
 export const dynamic = 'force-dynamic';
@@ -47,8 +49,8 @@ export async function POST(request: NextRequest) {
     console.log('[API] File converted to buffer');
 
     // PDF 파일 처리
-    const data = await pdf(buffer);
-    const text = data.text;
+    const data = await pdfExtract.extractBuffer(buffer, {});
+    const text = data.pages.map(page => page.content.map(item => item.str).join(' ')).join('\n');
     console.log('[API] Text extracted from PDF, length:', text.length);
 
     // 텍스트를 청크로 나누기
@@ -68,21 +70,23 @@ export async function POST(request: NextRequest) {
         .from('pdf_chunks')
         .insert({
           content: chunk,
-          keywords: keywords,
+          keywords: keywords || [],
           file_name: fileName,
           metadata: {
             title: file.name,
-            pages: data.numpages,
-            info: data.info
+            pages: data.pages.length,
+            info: {}
           }
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('[API] Supabase insert error:', error);
+        throw error;
+      }
     }
 
     console.log(`[API] Saved ${chunks.length} chunks to Supabase`);
 
-    // 첫 번째 청크만 미리보기로 반환
     return new Response(JSON.stringify({
       success: true,
       text: chunks[0] + (chunks.length > 1 ? '...' : ''),
@@ -92,7 +96,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[API] Upload error:', error);
     return new Response(
-      JSON.stringify({ error: 'Failed to process file' }),
+      JSON.stringify({ 
+        error: 'Failed to process file',
+        details: error instanceof Error ? error.message : String(error)
+      }),
       { status: 500 }
     );
   }

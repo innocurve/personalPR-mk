@@ -1,14 +1,21 @@
-import prisma from '@/lib/prisma';
+import { supabase } from '@/app/utils/supabase';
 
 export async function getProjects() {
-  return await prisma.project.findMany({
-    orderBy: { createdAt: 'desc' }
-  })
+  const { data: projects, error } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return projects;
 }
 
 export async function getExperiences() {
-  return await prisma.experience.findMany({
-    orderBy: { createdAt: 'desc' }
-  })
-}
+  const { data: experiences, error } = await supabase
+    .from('experiences')
+    .select('*')
+    .order('created_at', { ascending: false });
 
+  if (error) throw error;
+  return experiences;
+} 
