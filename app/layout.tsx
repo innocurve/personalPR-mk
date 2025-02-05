@@ -19,41 +19,27 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
-  title: "정민기 AI Clone",
-  description: "정민기의 AI 클론 채팅봇",
+  title: "InnoCard",
+  description: "InnoCard - 혁신적인 전자 명함 솔루션",
   icons: {
-    icon: [
-      {
-        url: '/logo.png',
-        href: '/logo.png',
-      }
-    ],
-    apple: [
-      {
-        url: '/logo.png',
-        sizes: '180x180',
-        type: 'image/png',
-      }
-    ],
+    icon: '/favicon.ico',
   },
   openGraph: {
-    title: "정민기 AI Clone",
-    description: "정민기의 AI 클론 채팅봇",
+    title: "InnoCard",
+    description: "InnoCard - 혁신적인 전자 명함 솔루션",
     type: "website",
     images: [{
-      url: '/logo.png',
-      width: 800,
-      height: 800,
-      alt: '정민기 AI Clone'
-    }],
-    siteName: "정민기 AI Clone"
+      url: '/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'InnoCard'
+    }]
   },
   twitter: {
     card: 'summary_large_image',
-    title: '정민기 AI Clone',
-    description: '정민기의 AI 클론 채팅봇',
-    images: ['/logo.png'],
-    creator: '@minki',
+    title: 'INNOCURVE',
+    description: 'INNOCURVE - AI 기반 디지털 혁신 기업',
+    images: ['/images/og-image.png'],
   },
 };
 
