@@ -200,7 +200,7 @@ export default function ChatPage() {
           <div className="flex items-center justify-between py-4">
             <Link href="/" className="flex items-center">
               <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/innocurve-logo-Yx0QZGtTGVhGHQUFVTxQtXVuYWBqrE.png"
+                src="/logo.png"
                 alt="InnocurveLogo"
                 width={120}
                 height={30}
