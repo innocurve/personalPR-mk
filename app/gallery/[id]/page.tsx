@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button"
 import { Language } from '../../utils/translations'
 
 interface GalleryParams {
-  id: string;
+  params: Promise<{
+    slug: string[];
+  }>;
 }
 
 interface GalleryItem {
