@@ -1,11 +1,18 @@
 import GalleryClient from './GalleryClient'
+import { Metadata } from 'next'
 
-interface Props {
+type PageProps = {
   params: {
     id: string;
   };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default function GalleryPage({ params }: Props) {
-  return <GalleryClient id={params.id} />
+export const metadata: Metadata = {
+  title: 'Gallery',
+  description: 'Gallery page',
+}
+
+export default function GalleryPage(props: PageProps) {
+  return <GalleryClient id={props.params.id} />
 } 
