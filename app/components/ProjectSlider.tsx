@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination, Autoplay } from 'swiper/modules'
 import 'swiper/css'
@@ -16,6 +17,14 @@ interface ProjectSliderProps {
 }
 
 export default function ProjectSlider({ posts, language, handlePostClick, translate }: ProjectSliderProps) {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
+
+  if (!isReady) return null;
+
   return (
     <Swiper
       modules={[Navigation, Pagination, Autoplay]}

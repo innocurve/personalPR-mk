@@ -19,6 +19,12 @@ import { useState, useEffect } from 'react';
 import { Menu, X, Mail, Phone } from 'lucide-react'
 import ContactOptions from './components/ContactOptions'
 import type { PostData } from './types/post'
+import dynamic from 'next/dynamic';
+
+// ProjectSlider를 동적으로 import
+const ProjectSlider = dynamic(() => import('./components/ProjectSlider'), {
+  ssr: false  // 서버 사이드 렌더링 비활성화
+});
 
 export default function Home() {
 const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -203,10 +209,10 @@ const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
   }
 };
 
-const [isClient, setIsClient] = useState(false);
+const [mounted, setMounted] = useState(false);
 
 useEffect(() => {
-  setIsClient(true);
+  setMounted(true);
 }, []);
 
 return (
@@ -337,54 +343,13 @@ return (
               <h2 className="text-3xl font-bold mb-8 text-center">
                 {translate('community', language)}
               </h2>
-              {isClient && (
-                <Swiper
-                  modules={[Navigation, Pagination, Autoplay]}
-                  spaceBetween={30}
-                  slidesPerView={1}
-                  navigation
-                  pagination={{ clickable: true }}
-                  loop={true}
-                  autoplay={{
-                    delay: 3000,
-                    disableOnInteraction: false,
-                  }}
-                  breakpoints={{
-                    640: {
-                      slidesPerView: 2,
-                    },
-                    1024: {
-                      slidesPerView: 3,
-                    },
-                  }}
-                  className="mySwiper"
-                >
-                  {posts.map((post) => (
-                    <SwiperSlide key={post.id}>
-                      <div
-                        onClick={() => handlePostClick(post.id)}
-                        className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-105"
-                      >
-                        <div className="relative h-48">
-                          <Image
-                            src={post.image}
-                            alt={post.title[language]}
-                            fill
-                            style={{ objectFit: 'cover' }}
-                          />
-                        </div>
-                        <div className="p-4">
-                          <h3 className="text-xl font-semibold mb-2">{post.title[language]}</h3>
-                          <p className="text-gray-600 mb-2">{post.description[language]}</p>
-                          <div className="flex justify-between items-center text-sm text-gray-500">
-                            <span>{post.date}</span>
-                            <span>{translate('views', language)}: {post.hit || 0}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+              {mounted && (
+                <ProjectSlider 
+                  posts={posts}
+                  language={language}
+                  handlePostClick={handlePostClick}
+                  translate={translate}
+                />
               )}
             </div>
           </section>
