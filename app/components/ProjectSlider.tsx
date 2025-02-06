@@ -8,12 +8,13 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import Image from 'next/image'
 import { PostData } from '../types/post'
+import { Language } from '../utils/translations'
 
 interface ProjectSliderProps {
   posts: PostData[];
-  language: 'ko' | 'en' | 'ja' | 'zh';
+  language: Language;
   handlePostClick: (postId: number) => void;
-  translate: (key: string, lang: string) => string;
+  translate: (key: string, lang: Language) => string;
 }
 
 export default function ProjectSlider({ posts, language, handlePostClick, translate }: ProjectSliderProps) {
