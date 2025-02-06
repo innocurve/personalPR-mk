@@ -11,6 +11,10 @@ interface GalleryParams {
   id: string;
 }
 
+interface PageProps {
+  params: GalleryParams;
+}
+
 interface GalleryItem {
   id: number;
   title: { [key in Language]: string };
@@ -19,7 +23,14 @@ interface GalleryItem {
   content: { [key in Language]: string };
 }
 
-export default function Gallery({ params }: { params: GalleryParams }) {
+interface Props {
+  params: {
+    id: string;
+  };
+}
+
+export default async function GalleryPage({ params }: Props) {
+  const { id } = params;
   const router = useRouter()
   const [gallery, setGallery] = useState<GalleryItem | null>(null)
   const [language, setLanguage] = useState<Language>('ko')
@@ -55,7 +66,7 @@ export default function Gallery({ params }: { params: GalleryParams }) {
         
         for (const post of posts) {
           if (post.gallery) {
-            const galleryItem = post.gallery.find((item: GalleryItem) => item.id === Number(params.id));
+            const galleryItem = post.gallery.find((item: GalleryItem) => item.id === Number(id));
             if (galleryItem) {
               foundGallery = galleryItem;
               break;
@@ -75,7 +86,7 @@ export default function Gallery({ params }: { params: GalleryParams }) {
     };
 
     fetchGallery();
-  }, [params.id, router]);
+  }, [id, router]);
 
   if (!gallery) {
     return <div>Loading...</div>

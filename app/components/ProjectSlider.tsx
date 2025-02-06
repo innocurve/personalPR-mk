@@ -35,6 +35,9 @@ export default function ProjectSlider({ posts, language, handlePostClick, transl
 
   if (!isReady) return null;
 
+  // slidesPerView에 따른 loop 모드 조건부 적용
+  const shouldEnableLoop = posts.length > 3;
+
   return (
     <div className="relative w-full">
       <Swiper
@@ -44,17 +47,17 @@ export default function ProjectSlider({ posts, language, handlePostClick, transl
         slidesPerView={1}
         navigation
         pagination={{ clickable: true }}
-        loop={true}
-        autoplay={{
+        loop={shouldEnableLoop}  // 조건부로 loop 활성화
+        autoplay={shouldEnableLoop ? {  // loop가 활성화된 경우에만 autoplay 적용
           delay: 3000,
           disableOnInteraction: false,
-        }}
+        } : false}
         breakpoints={{
           640: {
-            slidesPerView: 2,
+            slidesPerView: Math.min(2, posts.length),  // 슬라이드 개수에 따라 조정
           },
           1024: {
-            slidesPerView: 3,
+            slidesPerView: Math.min(3, posts.length),  // 슬라이드 개수에 따라 조정
           },
         }}
         className="mySwiper"
