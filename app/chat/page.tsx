@@ -231,8 +231,8 @@ export default function ChatPage() {
             <span className="text-lg font-medium">{translate('name', language)}{translate('cloneTitle', language)}</span>
           </div>
           <div className="flex items-center gap-2">
-
-          <input
+          
+         {/* <input 
                 type="file"
                 accept=".pdf"
                 onChange={handleFileUpload}
@@ -261,8 +261,8 @@ export default function ChatPage() {
                   />
                 </svg>
               </button>
-
-            <button
+            */}  
+              <button
               onClick={toggleDarkMode}
               className={`p-2 rounded-full ${
                 isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
