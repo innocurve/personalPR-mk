@@ -23,11 +23,7 @@ import type { PostData } from './types/post'
 export default function Home() {
 const [isMenuOpen, setIsMenuOpen] = useState(false)
 const { language } = useLanguage();
-const router = useRouter();
-const [posts, setPosts] = useState<PostData[]>([]);
-
-// 초기 데이터 설정을 위한 상수
-const initialPosts: PostData[] = [
+const [posts, setPosts] = useState<PostData[]>([
   { 
     id: 1, 
     title: {
@@ -118,57 +114,76 @@ const initialPosts: PostData[] = [
       zh: '拥有40年传统和工艺精神的金刚沙龙玻璃，以其奢华的设计和卓越的品质，完成了韩国顶级玻璃容器品牌的深厚口感和格调。',
     }
   },
-];
+]);
 
+const router = useRouter();
+
+// 초기 데이터 로드
 useEffect(() => {
-  console.log('Component mounted');
-  
-  // localStorage 체크
-  const storedPosts = localStorage.getItem('posts');
-  console.log('Stored posts:', storedPosts);
-  
-  if (!storedPosts || JSON.parse(storedPosts).length <= 1) {  // 저장된 데이터가 없거나 1개 이하일 때
-    console.log('Initializing with all posts');
-    localStorage.setItem('posts', JSON.stringify(initialPosts));
-    setPosts(initialPosts);
-  } else {
-    try {
-      const parsedPosts = JSON.parse(storedPosts);
-      console.log('Found stored posts:', parsedPosts);
-      // 저장된 posts의 길이가 initialPosts보다 작으면 초기화
-      if (parsedPosts.length < initialPosts.length) {
-        console.log('Stored posts incomplete, resetting to initial posts');
-        localStorage.setItem('posts', JSON.stringify(initialPosts));
-        setPosts(initialPosts);
-      } else {
-        setPosts(parsedPosts);
-      }
-    } catch (error) {
-      console.error('Error parsing stored posts:', error);
+  const loadInitialData = () => {
+    const storedPosts = localStorage.getItem('posts');
+    if (!storedPosts) {
+      // 초기 데이터 설정
+      const initialPosts = [
+        {
+          id: 1,
+          title: {
+            ko: '(사)대한청년을세계로 미래전략포럼 개최',
+            en: 'Future Strategy Forum held by Korean Youth to the World Association',
+            ja: '(社)大韓青年を世界へ 未来戦略フォーラム開催',
+            zh: '(社)韩国青年走向世界协会举办未来战略论坛',
+          },
+          date: '2024.12.3',
+          hit: 0,
+          image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%EB%AF%B8%EB%9E%98%EC%A0%84%EB%9E%B5%ED%8F%AC%EB%9F%BC.jpg-lobjD33dLn9HHvFaqwYC57KhFIHDJb.jpeg',
+          description: {
+            ko: '기술혁신의 시대속에서 청년들의 미래를 위한 전략을 논의하는 포럼을 개최합니다.',
+            en: 'Hosting a forum to discuss strategies for the future of youth in the era of technological innovation.',
+            ja: '技術革新の時代における若者の未来のための戦略を議論するフォーラムを開催します。',
+            zh: '举办论坛，讨论技术创新时代青年未来的战略。',
+          }
+        },
+        // ... 다른 포스트들 ...
+      ];
       localStorage.setItem('posts', JSON.stringify(initialPosts));
       setPosts(initialPosts);
+    } else {
+      setPosts(JSON.parse(storedPosts));
     }
-  }
-}, []);
+  };
 
-// 페이지 로드 시 localStorage 초기화 (개발 환경에서만 사용)
-useEffect(() => {
-  if (process.env.NODE_ENV === 'development') {
-    localStorage.setItem('posts', JSON.stringify(initialPosts));
-  }
-}, []);
+  loadInitialData();
+}, []); // 컴포넌트 마운트 시 한 번만 실행
 
-// posts 상태가 변경될 때마다 localStorage 업데이트
+// localStorage 데이터 변경 감지 및 상태 업데이트
 useEffect(() => {
-  if (posts.length > 0) {
-    localStorage.setItem('posts', JSON.stringify(posts));
-  }
-}, [posts]);
+  const handleStorageChange = () => {
+    const storedPosts = localStorage.getItem('posts');
+    if (storedPosts) {
+      setPosts(JSON.parse(storedPosts));
+    }
+  };
 
-// Swiper 렌더링 디버깅
+  window.addEventListener('storage', handleStorageChange);
+  return () => {
+    window.removeEventListener('storage', handleStorageChange);
+  };
+}, []); // 컴포넌트 마운트 시 이벤트 리스너 등록
+
+// 페이지 포커스 시 데이터 새로고침
 useEffect(() => {
-  console.log('Current posts state:', posts);
-}, [posts]);
+  const handleFocus = () => {
+    const storedPosts = localStorage.getItem('posts');
+    if (storedPosts) {
+      setPosts(JSON.parse(storedPosts));
+    }
+  };
+
+  window.addEventListener('focus', handleFocus);
+  return () => {
+    window.removeEventListener('focus', handleFocus);
+  };
+}, []); // 컴포넌트 마운트 시 이벤트 리스너 등록
 
 const handlePostClick = (postId: number) => {
   router.push(`/post/${postId}`);
@@ -186,12 +201,6 @@ const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
       behavior: "smooth"
     });
   }
-};
-
-// Swiper 컴포넌트에서 posts 데이터 확인
-const handleSlideChange = () => {
-  console.log('Current posts in Swiper:', posts);
-  console.log('Number of posts:', posts.length);
 };
 
 return (
@@ -328,53 +337,46 @@ return (
                 slidesPerView={1}
                 navigation
                 pagination={{ clickable: true }}
-                loop={posts.length > 1}
+                loop={true}
                 autoplay={{
                   delay: 3000,
                   disableOnInteraction: false,
                 }}
                 breakpoints={{
                   640: {
-                    slidesPerView: Math.min(2, posts.length),
+                    slidesPerView: 2,
                   },
                   1024: {
-                    slidesPerView: Math.min(3, posts.length),
+                    slidesPerView: 3,
                   },
                 }}
                 className="mySwiper"
-                onInit={(swiper) => {
-                  console.log('Swiper initialized with posts:', posts);
-                  console.log('Swiper slides count:', swiper.slides.length);
-                }}
               >
-                {posts.map((post, index) => {
-                  console.log(`Rendering post ${index + 1}:`, post);
-                  return (
-                    <SwiperSlide key={post.id}>
-                      <div
-                        onClick={() => handlePostClick(post.id)}
-                        className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-105"
-                      >
-                        <div className="relative h-48">
-                          <Image
-                            src={post.image}
-                            alt={post.title[language]}
-                            fill
-                            style={{ objectFit: 'cover' }}
-                          />
-                        </div>
-                        <div className="p-4">
-                          <h3 className="text-xl font-semibold mb-2">{post.title[language]}</h3>
-                          <p className="text-gray-600 mb-2">{post.description[language]}</p>
-                          <div className="flex justify-between items-center text-sm text-gray-500">
-                            <span>{post.date}</span>
-                            <span>{translate('views', language)}: {post.hit || 0}</span>
-                          </div>
+                {posts.map((post) => (
+                  <SwiperSlide key={post.id}>
+                    <div
+                      onClick={() => handlePostClick(post.id)}
+                      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-105"
+                    >
+                      <div className="relative h-48">
+                        <Image
+                          src={post.image}
+                          alt={post.title[language]}
+                          fill
+                          style={{ objectFit: 'cover' }}
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="text-xl font-semibold mb-2">{post.title[language]}</h3>
+                        <p className="text-gray-600 mb-2">{post.description[language]}</p>
+                        <div className="flex justify-between items-center text-sm text-gray-500">
+                          <span>{post.date}</span>
+                          <span>{translate('views', language)}: {post.hit || 0}</span>
                         </div>
                       </div>
-                    </SwiperSlide>
-                  );
-                })}
+                    </div>
+                  </SwiperSlide>
+                ))}
               </Swiper>
             </div>
           </section>
