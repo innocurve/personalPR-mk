@@ -19,12 +19,6 @@ import { useState, useEffect } from 'react';
 import { Menu, X, Mail, Phone } from 'lucide-react'
 import ContactOptions from './components/ContactOptions'
 import type { PostData } from './types/post'
-import dynamic from 'next/dynamic';
-
-// ProjectSlider를 동적으로 import
-const ProjectSlider = dynamic(() => import('./components/ProjectSlider'), {
-  ssr: false  // 서버 사이드 렌더링 비활성화
-});
 
 export default function Home() {
 const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -124,18 +118,72 @@ const [posts, setPosts] = useState<PostData[]>([
 
 const router = useRouter();
 
-const [mounted, setMounted] = useState(false);
-
+// 초기 데이터 로드
 useEffect(() => {
-  setMounted(true);
-  // posts 데이터가 있는지 확인하고 초기화
-  const storedPosts = localStorage.getItem('posts');
-  if (!storedPosts) {
-    localStorage.setItem('posts', JSON.stringify(posts));
-  } else {
-    setPosts(JSON.parse(storedPosts));
-  }
-}, []);
+  const loadInitialData = () => {
+    const storedPosts = localStorage.getItem('posts');
+    if (!storedPosts) {
+      // 초기 데이터 설정
+      const initialPosts = [
+        {
+          id: 1,
+          title: {
+            ko: '(사)대한청년을세계로 미래전략포럼 개최',
+            en: 'Future Strategy Forum held by Korean Youth to the World Association',
+            ja: '(社)大韓青年を世界へ 未来戦略フォーラム開催',
+            zh: '(社)韩国青年走向世界协会举办未来战略论坛',
+          },
+          date: '2024.12.3',
+          hit: 0,
+          image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%EB%AF%B8%EB%9E%98%EC%A0%84%EB%9E%B5%ED%8F%AC%EB%9F%BC.jpg-lobjD33dLn9HHvFaqwYC57KhFIHDJb.jpeg',
+          description: {
+            ko: '기술혁신의 시대속에서 청년들의 미래를 위한 전략을 논의하는 포럼을 개최합니다.',
+            en: 'Hosting a forum to discuss strategies for the future of youth in the era of technological innovation.',
+            ja: '技術革新の時代における若者の未来のための戦略を議論するフォーラムを開催します。',
+            zh: '举办论坛，讨论技术创新时代青年未来的战略。',
+          }
+        },
+        // ... 다른 포스트들 ...
+      ];
+      localStorage.setItem('posts', JSON.stringify(initialPosts));
+      setPosts(initialPosts);
+    } else {
+      setPosts(JSON.parse(storedPosts));
+    }
+  };
+
+  loadInitialData();
+}, []); // 컴포넌트 마운트 시 한 번만 실행
+
+// localStorage 데이터 변경 감지 및 상태 업데이트
+useEffect(() => {
+  const handleStorageChange = () => {
+    const storedPosts = localStorage.getItem('posts');
+    if (storedPosts) {
+      setPosts(JSON.parse(storedPosts));
+    }
+  };
+
+  window.addEventListener('storage', handleStorageChange);
+  return () => {
+    window.removeEventListener('storage', handleStorageChange);
+  };
+}, []); // 컴포넌트 마운트 시 이벤트 리스너 등록
+
+// 페이지 포커스 시 데이터 새로고침
+useEffect(() => {
+  const handleFocus = () => {
+    const storedPosts = localStorage.getItem('posts');
+    if (storedPosts) {
+      setPosts(JSON.parse(storedPosts));
+    }
+  };
+
+  window.addEventListener('focus', handleFocus);
+  return () => {
+    window.removeEventListener('focus', handleFocus);
+  };
+}, []); // 컴포넌트 마운트 시 이벤트 리스너 등록
 
 const handlePostClick = (postId: number) => {
   router.push(`/post/${postId}`);
@@ -277,20 +325,59 @@ return (
         </FadeInSection>
       </div>
       <div className="w-full overflow-x-hidden">
-        <FadeInSection>
-          <section id="community" className="py-16">
+      <FadeInSection>
+          <section id="community" className="py-16 bg-gray-50">
             <div className="container mx-auto px-4">
               <h2 className="text-3xl font-bold mb-8 text-center">
                 {translate('community', language)}
               </h2>
-              {mounted && posts.length > 0 && (  // posts가 있을 때만 렌더링
-                <ProjectSlider 
-                  posts={posts}
-                  language={language}
-                  handlePostClick={handlePostClick}
-                  translate={translate}
-                />
-              )}
+              <Swiper
+                modules={[Navigation, Pagination, Autoplay]}
+                spaceBetween={30}
+                slidesPerView={1}
+                navigation
+                pagination={{ clickable: true }}
+                loop={true}
+                autoplay={{
+                  delay: 3000,
+                  disableOnInteraction: false,
+                }}
+                breakpoints={{
+                  640: {
+                    slidesPerView: 2,
+                  },
+                  1024: {
+                    slidesPerView: 3,
+                  },
+                }}
+                className="mySwiper"
+              >
+                {posts.map((post) => (
+                  <SwiperSlide key={post.id}>
+                    <div
+                      onClick={() => handlePostClick(post.id)}
+                      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-105"
+                    >
+                      <div className="relative h-48">
+                        <Image
+                          src={post.image}
+                          alt={post.title[language]}
+                          fill
+                          style={{ objectFit: 'cover' }}
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="text-xl font-semibold mb-2">{post.title[language]}</h3>
+                        <p className="text-gray-600 mb-2">{post.description[language]}</p>
+                        <div className="flex justify-between items-center text-sm text-gray-500">
+                          <span>{post.date}</span>
+                          <span>{translate('views', language)}: {post.hit || 0}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
           </section>
         </FadeInSection>
