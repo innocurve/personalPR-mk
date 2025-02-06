@@ -309,6 +309,12 @@ export const translations: TranslationDictionary = {
     ja: 'こんにちは！鄭民基と申します。何かお手伝いできることはありますか？',
     zh: '你好！我是郑民基。我能为您做些什么？'
   },
+  cloneGreeting: {
+    ko: "안녕하세요! 저는 정민기's Clone입니다. 무엇을 도와드릴까요?",
+    en: "Hello! I'm Minki Jeong's Clone. How can I help you?",
+    ja: "こんにちは！鄭玟基のクローンです。どのようにお手伝いできますか？",
+    zh: "你好！我是郑玟基的克隆。我能为您做些什么？"
+  },
 };
 
 export function translate(key: TranslationKey, lang: Language): string {

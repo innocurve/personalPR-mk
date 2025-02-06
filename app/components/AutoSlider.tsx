@@ -70,4 +70,3 @@ export default function AutoSlider({ children, interval = 3000 }: AutoSliderProp
     </div>
   );
 }
-

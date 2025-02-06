@@ -3,13 +3,16 @@ import { supabase } from '@/app/utils/supabase';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // params가 Promise이므로 await로 처리
+    const { id } = await params;
+
     const { data: gallery, error } = await supabase
       .from('gallery')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single();
 
     if (error) throw error;
