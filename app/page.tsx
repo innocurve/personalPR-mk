@@ -23,7 +23,11 @@ import type { PostData } from './types/post'
 export default function Home() {
 const [isMenuOpen, setIsMenuOpen] = useState(false)
 const { language } = useLanguage();
-const [posts, setPosts] = useState<PostData[]>([
+const router = useRouter();
+const [posts, setPosts] = useState<PostData[]>([]);
+
+// 초기 데이터 설정을 위한 상수
+const initialPosts: PostData[] = [
   { 
     id: 1, 
     title: {
@@ -114,25 +118,57 @@ const [posts, setPosts] = useState<PostData[]>([
       zh: '拥有40年传统和工艺精神的金刚沙龙玻璃，以其奢华的设计和卓越的品质，完成了韩国顶级玻璃容器品牌的深厚口感和格调。',
     }
   },
-]);
-
-const router = useRouter();
+];
 
 useEffect(() => {
-  console.log('Initial posts state:', posts);
+  console.log('Component mounted');
   
+  // localStorage 체크
   const storedPosts = localStorage.getItem('posts');
-  console.log('Stored posts in localStorage:', storedPosts ? JSON.parse(storedPosts) : 'No stored posts');
+  console.log('Stored posts:', storedPosts);
   
-  if (!storedPosts) {
-    localStorage.setItem('posts', JSON.stringify(posts));
-    console.log('Setting initial posts to localStorage');
+  if (!storedPosts || JSON.parse(storedPosts).length <= 1) {  // 저장된 데이터가 없거나 1개 이하일 때
+    console.log('Initializing with all posts');
+    localStorage.setItem('posts', JSON.stringify(initialPosts));
+    setPosts(initialPosts);
   } else {
-    const parsedPosts = JSON.parse(storedPosts);
-    setPosts(parsedPosts);
-    console.log('Loading posts from localStorage:', parsedPosts);
+    try {
+      const parsedPosts = JSON.parse(storedPosts);
+      console.log('Found stored posts:', parsedPosts);
+      // 저장된 posts의 길이가 initialPosts보다 작으면 초기화
+      if (parsedPosts.length < initialPosts.length) {
+        console.log('Stored posts incomplete, resetting to initial posts');
+        localStorage.setItem('posts', JSON.stringify(initialPosts));
+        setPosts(initialPosts);
+      } else {
+        setPosts(parsedPosts);
+      }
+    } catch (error) {
+      console.error('Error parsing stored posts:', error);
+      localStorage.setItem('posts', JSON.stringify(initialPosts));
+      setPosts(initialPosts);
+    }
   }
 }, []);
+
+// 페이지 로드 시 localStorage 초기화 (개발 환경에서만 사용)
+useEffect(() => {
+  if (process.env.NODE_ENV === 'development') {
+    localStorage.setItem('posts', JSON.stringify(initialPosts));
+  }
+}, []);
+
+// posts 상태가 변경될 때마다 localStorage 업데이트
+useEffect(() => {
+  if (posts.length > 0) {
+    localStorage.setItem('posts', JSON.stringify(posts));
+  }
+}, [posts]);
+
+// Swiper 렌더링 디버깅
+useEffect(() => {
+  console.log('Current posts state:', posts);
+}, [posts]);
 
 const handlePostClick = (postId: number) => {
   router.push(`/post/${postId}`);
@@ -306,10 +342,13 @@ return (
                   },
                 }}
                 className="mySwiper"
-                onSlideChange={handleSlideChange}  // 슬라이드 변경 시 로그 출력
+                onInit={(swiper) => {
+                  console.log('Swiper initialized with posts:', posts);
+                  console.log('Swiper slides count:', swiper.slides.length);
+                }}
               >
                 {posts.map((post, index) => {
-                  console.log(`Rendering post ${index + 1}:`, post); // 각 포스트 렌더링 확인
+                  console.log(`Rendering post ${index + 1}:`, post);
                   return (
                     <SwiperSlide key={post.id}>
                       <div
