@@ -10,7 +10,7 @@ import { PostData } from '../types/post'
 
 interface ProjectSliderProps {
   posts: PostData[];
-  language: string;
+  language: 'ko' | 'en' | 'ja' | 'zh';
   handlePostClick: (postId: number) => void;
   translate: (key: string, lang: string) => string;
 }
