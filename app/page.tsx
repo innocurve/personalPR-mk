@@ -119,11 +119,18 @@ const [posts, setPosts] = useState<PostData[]>([
 const router = useRouter();
 
 useEffect(() => {
+  console.log('Initial posts state:', posts);
+  
   const storedPosts = localStorage.getItem('posts');
+  console.log('Stored posts in localStorage:', storedPosts ? JSON.parse(storedPosts) : 'No stored posts');
+  
   if (!storedPosts) {
     localStorage.setItem('posts', JSON.stringify(posts));
+    console.log('Setting initial posts to localStorage');
   } else {
-    setPosts(JSON.parse(storedPosts));
+    const parsedPosts = JSON.parse(storedPosts);
+    setPosts(parsedPosts);
+    console.log('Loading posts from localStorage:', parsedPosts);
   }
 }, []);
 
@@ -143,6 +150,12 @@ const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
       behavior: "smooth"
     });
   }
+};
+
+// Swiper 컴포넌트에서 posts 데이터 확인
+const handleSlideChange = () => {
+  console.log('Current posts in Swiper:', posts);
+  console.log('Number of posts:', posts.length);
 };
 
 return (
@@ -293,32 +306,36 @@ return (
                   },
                 }}
                 className="mySwiper"
+                onSlideChange={handleSlideChange}  // 슬라이드 변경 시 로그 출력
               >
-                {posts.map((post) => (
-                  <SwiperSlide key={post.id}>
-                    <div
-                      onClick={() => handlePostClick(post.id)}
-                      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-105"
-                    >
-                      <div className="relative h-48">
-                        <Image
-                          src={post.image}
-                          alt={post.title[language]}
-                          fill
-                          style={{ objectFit: 'cover' }}
-                        />
-                      </div>
-                      <div className="p-4">
-                        <h3 className="text-xl font-semibold mb-2">{post.title[language]}</h3>
-                        <p className="text-gray-600 mb-2">{post.description[language]}</p>
-                        <div className="flex justify-between items-center text-sm text-gray-500">
-                          <span>{post.date}</span>
-                          <span>{translate('views', language)}: {post.hit || 0}</span>
+                {posts.map((post, index) => {
+                  console.log(`Rendering post ${index + 1}:`, post); // 각 포스트 렌더링 확인
+                  return (
+                    <SwiperSlide key={post.id}>
+                      <div
+                        onClick={() => handlePostClick(post.id)}
+                        className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-105"
+                      >
+                        <div className="relative h-48">
+                          <Image
+                            src={post.image}
+                            alt={post.title[language]}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                          />
+                        </div>
+                        <div className="p-4">
+                          <h3 className="text-xl font-semibold mb-2">{post.title[language]}</h3>
+                          <p className="text-gray-600 mb-2">{post.description[language]}</p>
+                          <div className="flex justify-between items-center text-sm text-gray-500">
+                            <span>{post.date}</span>
+                            <span>{translate('views', language)}: {post.hit || 0}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </SwiperSlide>
-                ))}
+                    </SwiperSlide>
+                  );
+                })}
               </Swiper>
             </div>
           </section>
