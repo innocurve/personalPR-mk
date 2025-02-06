@@ -7,12 +7,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Language } from '../../utils/translations'
 
-interface GalleryParams {
-  params: Promise<{
-    slug: string[];
-  }>;
-}
-
 interface GalleryItem {
   id: number;
   title: { [key in Language]: string };
@@ -21,7 +15,14 @@ interface GalleryItem {
   content: { [key in Language]: string };
 }
 
-export default function Gallery({ params }: { params: GalleryParams }) {
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default async function Gallery({ params }: PageProps) {
+  const { id } = await params;  // params가 Promise이므로 await 사용
   const router = useRouter()
   const [gallery, setGallery] = useState<GalleryItem | null>(null)
   const [language, setLanguage] = useState<Language>('ko')
@@ -57,7 +58,7 @@ export default function Gallery({ params }: { params: GalleryParams }) {
         
         for (const post of posts) {
           if (post.gallery) {
-            const galleryItem = post.gallery.find((item: GalleryItem) => item.id === Number(params.id));
+            const galleryItem = post.gallery.find((item: GalleryItem) => item.id === Number(id));  // params.id 대신 id 사용
             if (galleryItem) {
               foundGallery = galleryItem;
               break;
@@ -77,7 +78,7 @@ export default function Gallery({ params }: { params: GalleryParams }) {
     };
 
     fetchGallery();
-  }, [params.id, router]);
+  }, [id, router]);  // params.id 대신 id 사용
 
   if (!gallery) {
     return <div>Loading...</div>
