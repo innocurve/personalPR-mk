@@ -18,38 +18,50 @@ const initialMessages = {
 };
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const { language } = useLanguage()
+  const { language } = useLanguage();
+  const [messages, setMessages] = useState<Message[]>([{
+    role: 'assistant',
+    content: initialMessages[language as keyof typeof initialMessages] || initialMessages.ko
+  }]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [pdfContent, setPdfContent] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // localStorage에서 메시지 불러오기
   useEffect(() => {
-    const savedMessages = localStorage.getItem('chatMessages')
+    const savedMessages = localStorage.getItem('chatMessages');
     if (savedMessages) {
-      const parsedMessages = JSON.parse(savedMessages)
+      const parsedMessages = JSON.parse(savedMessages);
       if (parsedMessages.length > 0) {
-        setMessages(parsedMessages)
-      } else {
-        setMessages([{
+        setMessages(parsedMessages);
+      }
+    }
+  }, []);
+
+  // 언어 변경 시 첫 메시지 업데이트
+  useEffect(() => {
+    setMessages(prevMessages => {
+      if (prevMessages.length === 0) {
+        return [{
           role: 'assistant',
           content: initialMessages[language as keyof typeof initialMessages] || initialMessages.ko
-        }])
+        }];
       }
-    } else {
-      setMessages([{
-        role: 'assistant',
-        content: initialMessages[language as keyof typeof initialMessages] || initialMessages.ko
-      }])
-    }
-  }, [language])
+      return [
+        {
+          role: 'assistant',
+          content: initialMessages[language as keyof typeof initialMessages] || initialMessages.ko
+        },
+        ...prevMessages.slice(1)
+      ];
+    });
+  }, [language]);
 
+  // 메시지가 변경될 때마다 localStorage 업데이트
   useEffect(() => {
-    if (messages.length > 0) {
-      localStorage.setItem('chatMessages', JSON.stringify(messages))
-    }
-  }, [messages])
+    localStorage.setItem('chatMessages', JSON.stringify(messages));
+  }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
