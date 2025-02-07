@@ -336,16 +336,30 @@ return (
                   stopOnLastSlide: false
                 }}
                 breakpoints={{
+                  // 모바일
+                  0: {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                    slidesPerGroup: 1,
+                  },
+                  // 태블릿
                   640: {
                     slidesPerView: Math.min(2, posts.length),
                     spaceBetween: 20,
+                    slidesPerGroup: 1,
                   },
+                  // 데스크탑
                   1024: {
                     slidesPerView: Math.min(3, posts.length),
                     spaceBetween: 20,
-                  },
+                    slidesPerGroup: 1,
+                  }
                 }}
                 className="!pb-12 !overflow-visible"
+                observer={true}
+                observeParents={true}
+                watchOverflow={true}
+                resizeObserver={true}
               >
                 {posts.map((post) => (
                   <SwiperSlide 
