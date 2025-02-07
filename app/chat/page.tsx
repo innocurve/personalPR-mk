@@ -229,7 +229,7 @@ export default function ChatPage() {
               <span className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Back</span>
             </Link>
           </div>
-          <div className="flex-1 flex flex-col items-center">
+          <div className="flex-1 flex flex-col items-start md:items-center">
             <div className="w-16 h-16 relative rounded-full overflow-hidden mb-2">
               <Image
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JTSehNl2EKBQk7qe2rhkhmUTpPGYrW.png"
