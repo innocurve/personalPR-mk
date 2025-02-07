@@ -143,7 +143,78 @@ useEffect(() => {
             zh: '举办论坛，讨论技术创新时代青年未来的战略。',
           }
         },
-        // ... 다른 포스트들 ...
+        { 
+          id: 2, 
+          title: {
+            ko: '이노커브 InnoCard',
+            en: 'Innocurve InnoCard',
+            ja: 'イノカーブ InnoCard',
+            zh: 'InnoCurve InnoCard',
+          },
+          date: '2024-03-01', 
+          hit: 0,
+          image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%EC%A0%9C%EB%AA%A9%20%EC%97%86%EC%9D%8C%20(300%20x%20200%20px)-YqEdcEhhDJYNijbTp5DIM9uER4sZNS.png',
+          description: {
+            ko: '종이 명함을 넘어 자신만의 웹사이트로 나를 표현하고, 연결하며, 확장할 수 있는 AI 전자명함 서비스를 소개합니다. 당신의 이야기를 담고, 네트워크를 스마트하게 이어주는 디지털 공간을 만나보세요.',
+            en: 'Introducing AI digital business cards that go beyond paper, allowing you to express, connect, and expand through your own website. Discover a digital space that holds your story and smartly connects your network.',
+            ja: '紙の名刺を超え、自分だけのウェブサイトで自己表現、つながり、拡張できるAIデジタル名刺サービスをご紹介します。あなたのストーリーを込め、ネットワークをスマートにつなぐデジタル空間をご体験ください。',
+            zh: '介绍一款超越纸质名片的AI电子名片服务，您可以通过自己的网站来表达、连接和扩展自己。探索一个承载您的故事并智能连接您的网络的数字空间。',
+          }
+        },
+        { 
+          id: 3, 
+          title: {
+            ko: '이노커브 AIConnect',
+            en: 'Innocurve AIConnect',
+            ja: 'イノカーブ AIConnect',
+            zh: 'InnoCurve AIConnect',
+          },
+          date: '2024-02-15', 
+          hit: 0,
+          image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/INNOCURVE-UEJ6P4SmjI6dvCbd6jXEsOFWMdMjqW.png',
+          description: {
+            ko: '기술 발전의 혜택을 누구나 누릴 수 있도록, 각 산업별 맞춤형 AI 컨설팅과 최적화된 솔루션을 제공합니다.',
+            en: 'We provide customized AI consulting and optimized solutions for each industry to ensure everyone can enjoy the benefits of technological advancement.',
+            ja: '技術発展の恩恵を誰もが享受できるよう、各産業別にカスタマイズされたAIコンサルティングと最適化されたソリューションを提供します。',
+            zh: '我们为各个行业提供定制的AI咨询和优化的解决方案，以确保每个人都能享受到技术进步的益处。',
+          }
+        },
+        { 
+          id: 4, 
+          title: {
+            ko: '이노커브 마케팅',
+            en: 'Innocurve Marketing',
+            ja: 'イノカーブマーケティング',
+            zh: 'InnoCurve营销',
+          },
+          date: '2024-01-10', 
+          hit: 0,
+          image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%EC%A0%9C%EB%AA%A9%20%EC%97%86%EC%9D%8C%20(300%20x%20200%20px)%20(1)-NxaNNp6obIPVIlOTroVTYrMKQeS8Z2.png',
+          description: {
+            ko: 'AI를 활용한 홈페이지, 이미지, 영상 등 다양한 디지털 콘텐츠 제작을 통해 비용은 효율적으로 절감하고, 최상의 퀄리티로 효과적인 홍보를 지원합니다.',
+            en: 'We support effective promotion with top quality while efficiently reducing costs through the production of various digital content such as AI-powered websites, images, and videos.',
+            ja: 'AIを活用したホームページ、画像、動画など、さまざまなデジタルコンテンツの制作を通じてコストを効率的に削減し、最高の品質で効果的なプロモーションをサポートします。',
+            zh: '通过制作AI驱动的网站、图像和视频等各种数字内容，有效降低成本，并以最高质量支持有效的推广。',
+          }
+        },
+        {
+          id: 5,
+          title: {
+            ko: '금강샤론',
+            en: 'Geumgang Sharon',
+            ja: '金剛シャロン',
+            zh: '金刚沙龙',
+          },
+          date: '2024-01-05',
+          hit: 0,
+          image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%EC%A0%9C%EB%AA%A9%20%EC%97%86%EB%8A%94%20%EB%94%94%EC%9E%90%EC%9D%B8-FGdqIT95etjPBkIXDiG4NcAKWr8gZC.png',
+          description: {
+            ko: '40년의 전통과 장인 정신으로 빚어낸 유리 공예의 아름다움, 금강샤론그라스는 고급스러운 디자인과 뛰어난 품질로 담금주의 깊은 맛과 멋을 완성하는 대한민국 대표 유리 용기 브랜드입니다.',
+            en: 'With 40 years of tradition and craftsmanship, Geumgang Sharon Glass is Korea\'s leading glass container brand that completes the deep taste and style of liquor with luxurious design and excellent quality.',
+            ja: '40年の伝統と職人精神で作り上げたガラス工芸の美しさ、金剛シャロングラスは高級なデザインと優れた品質で漬け込み酒の深い味わいと風情を完成させる韓国を代表するガラス容器ブランドです。',
+            zh: '拥有40年传统和工艺精神的金刚沙龙玻璃，以其奢华的设计和卓越的品质，完成了韩国顶级玻璃容器品牌的深厚口感和格调。',
+          }
+        }
       ];
       localStorage.setItem('posts', JSON.stringify(initialPosts));
       setPosts(initialPosts);
