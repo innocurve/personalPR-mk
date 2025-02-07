@@ -218,27 +218,27 @@ export default function ChatPage() {
       <div className={`max-w-3xl mx-auto shadow-sm min-h-[calc(100vh-80px)] pt-20 ${
         isDarkMode ? 'bg-gray-900 text-white' : 'bg-white'
       }`}>
-        <header className={`flex items-center justify-between px-4 py-3 border-b ${
+        <header className={`flex items-center px-4 py-3 border-b ${
           isDarkMode ? 'border-gray-700' : ''
         }`}>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <Link href="/" className={`p-2 rounded-full ${
               isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
             } flex items-center gap-2`}>
               <ArrowLeft className="w-5 h-5" />
               <span className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>Back</span>
             </Link>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 relative rounded-full overflow-hidden">
-                <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JTSehNl2EKBQk7qe2rhkhmUTpPGYrW.png"
-                  alt={translate('name', language)}
-                  layout="fill"
-                  className="object-cover"
-                />
-              </div>
-              <span className="text-lg font-medium">{translate('name', language)}{translate('cloneTitle', language)}</span>
+          </div>
+          <div className="flex-1 flex flex-col items-center">
+            <div className="w-16 h-16 relative rounded-full overflow-hidden mb-2">
+              <Image
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JTSehNl2EKBQk7qe2rhkhmUTpPGYrW.png"
+                alt={translate('name', language)}
+                layout="fill"
+                className="object-cover"
+              />
             </div>
+            <span className="text-lg font-medium">{translate('name', language)}{translate('cloneTitle', language)}</span>
           </div>
           <div className="flex items-center gap-2">
             <button
