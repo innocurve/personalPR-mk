@@ -154,8 +154,6 @@ export default function PostDetail() {
                 {translate('backToList', language)}
               </Button>
               <div className="flex items-center gap-2 text-sm text-gray-500">
-                <span>{post.date}</span>
-                <span>•</span>
                 <span>{translate('views', language)}: {post.hit || 0}</span>
               </div>
             </div>

@@ -381,7 +381,6 @@ return (
                            }}
                         >{post.description[language]}</p>
                         <div className="flex justify-between items-center text-sm text-gray-500 mt-auto">
-                          <span>{post.date}</span>
                           <span>{translate('views', language)}: {post.hit || 0}</span>
                         </div>
                       </div>
