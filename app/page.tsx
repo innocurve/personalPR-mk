@@ -346,97 +346,66 @@ return (
       </div>
       <div className="w-full overflow-x-hidden">
       <FadeInSection>
-          <section id="community" className="py-16 bg-gray-50">
+          <section id="community" className="py-16">
             <div className="container mx-auto px-4">
-              <h2 className="text-3xl font-bold mb-8 text-center">
-                {translate('community', language)}
-              </h2>
               <Swiper
                 modules={[Navigation, Pagination, Autoplay]}
                 spaceBetween={20}
                 slidesPerView={1}
-                navigation={{
-                  enabled: true,
-                  nextEl: '.swiper-button-next',
-                  prevEl: '.swiper-button-prev',
-                }}
-                pagination={{ 
-                  clickable: true,
-                  dynamicBullets: true,
-                  enabled: true
-                }}
+                navigation
+                pagination={{ clickable: true }}
                 loop={true}
                 autoplay={{
                   delay: 3000,
                   disableOnInteraction: false,
                   pauseOnMouseEnter: true
                 }}
-                touchEventsTarget="wrapper"
-                simulateTouch={true}
-                touchRatio={1}
-                grabCursor={true}
-                touchStartPreventDefault={false}
-                touchMoveStopPropagation={true}
                 breakpoints={{
-                  // 모바일
-                  320: {
-                    slidesPerView: 1,
-                    spaceBetween: 10,
-                    navigation: {
-                      enabled: false
-                    }
-                  },
-                  // 태블릿
                   640: {
                     slidesPerView: 2,
                     spaceBetween: 20,
-                    navigation: {
-                      enabled: true
-                    }
                   },
-                  // 데스크탑
                   1024: {
                     slidesPerView: 3,
-                    spaceBetween: 30,
-                    navigation: {
-                      enabled: true
-                    }
-                  }
+                    spaceBetween: 20,
+                  },
                 }}
-                className="mySwiper !px-4 sm:!px-0 touch-pan-y"
-                style={{ 
-                  width: '100%',
-                  height: '100%',
-                  '--swiper-theme-color': '#000',
-                  '--swiper-pagination-color': '#000',
-                  '--swiper-pagination-bullet-inactive-color': '#999',
-                  '--swiper-pagination-bullet-inactive-opacity': '0.5',
-                  '--swiper-navigation-color': '#000',
-                  '--swiper-navigation-size': '25px'
-                } as React.CSSProperties}
+                className="!pb-12 !overflow-visible"
               >
                 {posts.map((post) => (
                   <SwiperSlide 
                     key={post.id}
-                    className="touch-pan-y"
+                    className="!overflow-visible p-1"
                   >
                     <div
                       onClick={() => handlePostClick(post.id)}
-                      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-105 h-full touch-pan-y"
+                      className="bg-white rounded-lg shadow-md cursor-pointer transform transition-all duration-300 hover:scale-105 h-[340px] flex flex-col"
                     >
-                      <div className="relative h-48">
+                      <div className="relative h-36 rounded-t-lg overflow-hidden">
                         <Image
                           src={post.image}
                           alt={post.title[language]}
                           fill
                           style={{ objectFit: 'cover' }}
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                       </div>
-                      <div className="p-4">
-                        <h3 className="text-xl font-semibold mb-2 line-clamp-1">{post.title[language]}</h3>
-                        <p className="text-gray-600 mb-2 line-clamp-3">{post.description[language]}</p>
-                        <div className="flex justify-between items-center text-sm text-gray-500">
+                      <div className="p-3 flex flex-col flex-1">
+                        <h3 className="text-xl font-semibold mb-1.5 overflow-hidden"
+                            style={{
+                              display: '-webkit-box',
+                              WebkitBoxOrient: 'vertical',
+                              WebkitLineClamp: '2',
+                              maxHeight: '56px'
+                            }}
+                        >{post.title[language]}</h3>
+                        <p className="text-gray-600 mb-1 overflow-hidden"
+                           style={{
+                             display: '-webkit-box',
+                             WebkitBoxOrient: 'vertical',
+                             WebkitLineClamp: '3'
+                           }}
+                        >{post.description[language]}</p>
+                        <div className="flex justify-between items-center text-sm text-gray-500 mt-auto">
                           <span>{post.date}</span>
                           <span>{translate('views', language)}: {post.hit || 0}</span>
                         </div>
