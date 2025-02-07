@@ -121,35 +121,9 @@ const router = useRouter();
 // 초기 데이터 로드
 useEffect(() => {
   const loadInitialData = () => {
-    const storedPosts = localStorage.getItem('posts');
-    if (!storedPosts) {
-      // 초기 데이터 설정
-      const initialPosts = [
-        {
-          id: 1,
-          title: {
-            ko: '(사)대한청년을세계로 미래전략포럼 개최',
-            en: 'Future Strategy Forum held by Korean Youth to the World Association',
-            ja: '(社)大韓青年を世界へ 未来戦略フォーラム開催',
-            zh: '(社)韩国青年走向世界协会举办未来战略论坛',
-          },
-          date: '2024.12.3',
-          hit: 0,
-          image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%EB%AF%B8%EB%9E%98%EC%A0%84%EB%9E%B5%ED%8F%AC%EB%9F%BC.jpg-lobjD33dLn9HHvFaqwYC57KhFIHDJb.jpeg',
-          description: {
-            ko: '기술혁신의 시대속에서 청년들의 미래를 위한 전략을 논의하는 포럼을 개최합니다.',
-            en: 'Hosting a forum to discuss strategies for the future of youth in the era of technological innovation.',
-            ja: '技術革新の時代における若者の未来のための戦略を議論するフォーラムを開催します。',
-            zh: '举办论坛，讨论技术创新时代青年未来的战略。',
-          }
-        },
-        // ... 다른 포스트들 ...
-      ];
-      localStorage.setItem('posts', JSON.stringify(initialPosts));
-      setPosts(initialPosts);
-    } else {
-      setPosts(JSON.parse(storedPosts));
-    }
+    // 항상 최신 데이터로 초기화
+    localStorage.setItem('posts', JSON.stringify(posts));
+    setPosts(posts);
   };
 
   loadInitialData();
@@ -354,7 +328,7 @@ return (
                 slidesPerView={1}
                 navigation
                 pagination={{ clickable: true }}
-                loop={true}
+                loop={posts.length > 1}
                 autoplay={{
                   delay: 3000,
                   disableOnInteraction: false,
