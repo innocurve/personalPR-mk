@@ -121,9 +121,14 @@ const router = useRouter();
 // 초기 데이터 로드
 useEffect(() => {
   const loadInitialData = () => {
-    // 항상 최신 데이터로 초기화
-    localStorage.setItem('posts', JSON.stringify(posts));
-    setPosts(posts);
+    const storedPosts = localStorage.getItem('posts');
+    if (!storedPosts) {
+      // 초기 데이터가 없을 때만 설정
+      localStorage.setItem('posts', JSON.stringify(posts));
+    } else {
+      // 저장된 데이터가 있으면 그것을 사용
+      setPosts(JSON.parse(storedPosts));
+    }
   };
 
   loadInitialData();

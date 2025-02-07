@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
@@ -15,66 +15,47 @@ export default function PostDetail() {
   const router = useRouter()
   const { language } = useLanguage()
   const [post, setPost] = useState<PostData | null>(null)
+  const [hasIncremented, setHasIncremented] = useState(false)
+
+  const incrementViewCount = useCallback((post: PostData) => {
+    try {
+      if (hasIncremented) return; // 이미 증가했으면 리턴
+
+      // 조회수 증가
+      const updatedPost = { 
+        ...post, 
+        hit: (post.hit || 0) + 1 
+      }
+      
+      // localStorage의 posts 업데이트
+      const posts = JSON.parse(localStorage.getItem('posts') || '[]')
+      const updatedPosts = posts.map((p: PostData) => 
+        p.id === post.id ? updatedPost : p
+      )
+      
+      // localStorage 업데이트
+      localStorage.setItem('posts', JSON.stringify(updatedPosts))
+      
+      // 상태 업데이트
+      setPost(updatedPost)
+      setHasIncremented(true)
+      console.log('View count updated successfully')
+    } catch (error) {
+      console.error('Error updating view count:', error)
+    }
+  }, [hasIncremented])
 
   useEffect(() => {
     const fetchPost = () => {
       const posts = JSON.parse(localStorage.getItem('posts') || '[]')
       const foundPost = posts.find((p: PostData) => p.id === Number(params.id))
       if (foundPost) {
-        // hit가 undefined일 경우 0으로 초기화
-        setPost({
-          ...foundPost,
-          hit: foundPost.hit || 0
-        })
-        incrementViewCount({
-          ...foundPost,
-          hit: foundPost.hit || 0
-        })
+        incrementViewCount(foundPost)
       }
     }
 
     fetchPost()
-  }, [params.id])
-
-  const incrementViewCount = (post: PostData) => {
-    try {
-      const now = new Date().getTime()
-      const viewHistory = JSON.parse(localStorage.getItem('postViewHistory') || '{}')
-      const lastViewTime = viewHistory[post.id] || 0
-      
-      // 24시간(86400000 밀리초)이 지났는지 확인
-      if (now - lastViewTime > 86400000) {
-        console.log('Incrementing view count for post:', post.id)
-        
-        // 조회수 증가 (hit가 undefined일 경우 0으로 처리)
-        const updatedPost = { 
-          ...post, 
-          hit: (post.hit || 0) + 1 
-        }
-        
-        // localStorage의 posts 업데이트
-        const posts = JSON.parse(localStorage.getItem('posts') || '[]')
-        const updatedPosts = posts.map((p: PostData) => 
-          p.id === post.id ? updatedPost : p
-        )
-        
-        // localStorage 업데이트
-        localStorage.setItem('posts', JSON.stringify(updatedPosts))
-        localStorage.setItem('postViewHistory', JSON.stringify({
-          ...viewHistory,
-          [post.id]: now
-        }))
-        
-        // 상태 업데이트
-        setPost(updatedPost)
-        console.log('View count updated successfully')
-      } else {
-        console.log('View count not incremented - within 24h period')
-      }
-    } catch (error) {
-      console.error('Error updating view count:', error)
-    }
-  }
+  }, [params.id, incrementViewCount])
 
   if (!post) {
     return <div>Loading...</div>
