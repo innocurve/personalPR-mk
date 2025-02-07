@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Backup files
+*_backup.*
+*_backup_*.*
+
+# ESLint cache
+.eslintcache
