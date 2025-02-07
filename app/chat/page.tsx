@@ -215,7 +215,7 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <div className={`max-w-3xl mx-auto shadow-sm min-h-[calc(100vh-80px)] pt-20 ${
+      <div className={`max-w-3xl mx-auto shadow-sm min-h-[calc(100vh-80px)] pt-24 ${
         isDarkMode ? 'bg-gray-900 text-white' : 'bg-white'
       }`}>
         <header className={`flex items-center px-4 py-3 border-b ${
