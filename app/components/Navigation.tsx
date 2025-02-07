@@ -46,10 +46,10 @@ export default function Navigation({ language }: NavigationProps) {
           <div className="flex items-center">
             <Link href="/" onClick={handleLogoClick}>
               <Image 
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JymWzMj03WzfKjFdaw3DwGyH0stbgn.png" 
+                src="/logo.png" 
                 alt="이노커브 로고" 
-                width={120} 
-                height={48} 
+                width={160} 
+                height={64} 
                 className="object-contain cursor-pointer"
               />
             </Link>

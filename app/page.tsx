@@ -210,31 +210,35 @@ return (
         scroll-behavior: smooth;
       }
     `}</style>
-    <header className="bg-white py-4 px-6 fixed top-0 left-0 right-0 z-50">
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
-        <div className="flex items-center">
-          <Image 
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JymWzMj03WzfKjFdaw3DwGyH0stbgn.png" 
-            alt="이노커브 로고" 
-            width={120} 
-            height={48} 
-            priority
-            className="object-contain w-auto h-auto cursor-pointer"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          />
-        </div>
-        <div className="flex items-center space-x-4">
-          <nav className="hidden md:flex space-x-6">
-            <Link href="#profile" onClick={(e) => handleScrollTo(e, 'profile')} className="font-mono text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-600 hover:from-blue-600 hover:to-cyan-500 transition-all duration-300">{translate('profile', language)}</Link>
-            <Link href="#smart-options" onClick={(e) => handleScrollTo(e, 'smart-options')} className="font-mono text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-600 hover:from-blue-600 hover:to-cyan-500 transition-all duration-300">{translate('smartOptions', language)}</Link>
-            <Link href="#values" onClick={(e) => handleScrollTo(e, 'values')} className="font-mono text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-600 hover:from-blue-600 hover:to-cyan-500 transition-all duration-300">{translate('values', language)}</Link>
-            <Link href="#history" onClick={(e) => handleScrollTo(e, 'history')} className="font-mono text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-600 hover:from-blue-600 hover:to-cyan-500 transition-all duration-300">{translate('history', language)}</Link>
-            <Link href="#community" onClick={(e) => handleScrollTo(e, 'community')} className="font-mono text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-600 hover:from-blue-600 hover:to-cyan-500 transition-all duration-300">{translate('activities', language)}</Link>
-          </nav>
-          <LanguageToggle />
-          <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X className="w-6 h-6 text-gray-600" /> : <Menu className="w-6 h-6 text-gray-600" />}
-          </button>
+    <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 fixed top-0 left-0 right-0 z-50">
+      <div className="max-w-screen-xl mx-auto px-4">
+        <div className="flex items-center justify-between py-4">
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center">
+              <Image 
+                src="/logo.png" 
+                alt="이노커브 로고" 
+                width={160} 
+                height={64} 
+                priority
+                className="object-contain cursor-pointer"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              />
+            </Link>
+          </div>
+          <div className="flex items-center space-x-4">
+            <nav className="hidden md:flex space-x-6">
+              <Link href="#profile" onClick={(e) => handleScrollTo(e, 'profile')} className="font-mono tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 transition duration-300">{translate('profile', language)}</Link>
+              <Link href="#smart-options" onClick={(e) => handleScrollTo(e, 'smart-options')} className="font-mono tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 transition duration-300">{translate('smartOptions', language)}</Link>
+              <Link href="#values" onClick={(e) => handleScrollTo(e, 'values')} className="font-mono tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 transition duration-300">{translate('values', language)}</Link>
+              <Link href="#history" onClick={(e) => handleScrollTo(e, 'history')} className="font-mono tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 transition duration-300">{translate('history', language)}</Link>
+              <Link href="#community" onClick={(e) => handleScrollTo(e, 'community')} className="font-mono tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 transition duration-300">{translate('activities', language)}</Link>
+            </nav>
+            <LanguageToggle />
+            <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="w-6 h-6 text-gray-600" /> : <Menu className="w-6 h-6 text-gray-600" />}
+            </button>
+          </div>
         </div>
       </div>
     </header>

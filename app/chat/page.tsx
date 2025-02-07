@@ -206,18 +206,17 @@ export default function ChatPage() {
   };
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      <div className={`border-b ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'}`}>
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      <div className={`fixed top-0 left-0 right-0 z-50 border-b ${isDarkMode ? 'bg-gray-900 border-gray-700' : 'bg-white'}`}>
         <div className="max-w-screen-xl mx-auto px-4">
           <div className="flex items-center justify-between py-4">
-        
             <Navigation language={language} />
           </div>
         </div>
       </div>
 
-      <div className={`max-w-3xl mx-auto shadow-sm min-h-[calc(100vh-80px)] ${
-        isDarkMode ? 'bg-gray-800 text-white' : 'bg-white'
+      <div className={`max-w-3xl mx-auto shadow-sm min-h-[calc(100vh-80px)] pt-24 ${
+        isDarkMode ? 'bg-gray-900 text-white' : 'bg-white'
       }`}>
         <header className={`flex items-center px-4 py-3 border-b ${
           isDarkMode ? 'border-gray-700' : ''
@@ -239,42 +238,10 @@ export default function ChatPage() {
                 className="object-cover"
               />
             </div>
-          
             <span className="text-lg font-medium">{translate('name', language)}{translate('cloneTitle', language)}</span>
           </div>
           <div className="flex items-center gap-2">
-          
-         {/* <input 
-                type="file"
-                accept=".pdf"
-                onChange={handleFileUpload}
-                ref={fileInputRef}
-                className="hidden"
-              />
-              <button 
-                onClick={() => fileInputRef.current?.click()}
-                className={`p-2 rounded-full ${
-                  isDarkMode ? 'text-white hover:text-gray-200' : 'text-black hover:text-gray-800'
-                }`}
-                title="PDF 업로드"
-              >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  strokeWidth={1.5} 
-                  stroke="currentColor" 
-                  className="w-5 h-5"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" 
-                  />
-                </svg>
-              </button>
-            */}  
-              <button
+            <button
               onClick={toggleDarkMode}
               className={`p-2 rounded-full ${
                 isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
@@ -310,9 +277,13 @@ export default function ChatPage() {
         <footer className={`border-t p-4 ${
           isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'
         }`}>
-          <ChatInput onSendMessage={handleSendMessage} isDarkMode={isDarkMode} placeholder={translate('chatInputPlaceholder', language)} />
+          <ChatInput 
+            onSendMessage={handleSendMessage} 
+            isDarkMode={isDarkMode} 
+            placeholder={translate('chatInputPlaceholder', language)} 
+          />
         </footer>
       </div>
     </div>
   )
-} 
+}
