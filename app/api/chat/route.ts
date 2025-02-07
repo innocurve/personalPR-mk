@@ -16,12 +16,14 @@ interface ScoredChunk {
 interface PdfChunk {
   content: string;
   keywords: string[];
+ 
 }
 
 interface Project {
   title: string;
   description: string;
-  tech_stack: string[]; // Supabase에서는 snake_case를 사용
+  tech_stack: string[];
+  owner_id: number;
 }
 
 interface Experience {
@@ -29,6 +31,7 @@ interface Experience {
   position: string;
   period: string;
   description: string;
+  owner_id: number;
 }
 
 interface Owner {
@@ -38,10 +41,19 @@ interface Owner {
   values: string;
   country?: string;
   birth?: string;
+  owner_id: number;
+}
+
+interface ChatHistory {
+  role: string;
+  content: string;
+  owner_id: number;
+  created_at?: string;
 }
 
 // 키워드 기반 PDF 청크 검색 함수
 async function searchRelevantChunks(question: string): Promise<string> {
+  const ownerId = process.env.NEXT_PUBLIC_OWNER_ID;
   const keywords = question
     .split(/[\s,.]+/)
     .filter(word => word.length > 1 && !stopWords.has(word));
@@ -87,25 +99,50 @@ async function searchRelevantChunks(question: string): Promise<string> {
   }
 }
 
-export async function POST(req: Request) {
+export async function GET(request: Request) {
+  const ownerId = process.env.NEXT_PUBLIC_OWNER_ID;
+
   try {
-    const body = await req.json().catch(() => null);
-    if (!body?.messages) {
-      return new Response(JSON.stringify({ error: 'No messages field' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    const { data, error } = await supabase
+      .from('chat_history')
+      .select('*')
+      .eq('owner_id', ownerId)
+      .order('created_at', { ascending: true });
 
-    const { messages } = body;
-    const lastUserMessage = messages.findLast((msg: any) => msg.role === 'user')?.content || '';
+    if (error) throw error;
+    return new Response(JSON.stringify(data));
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Failed to fetch messages' }), { status: 500 });
+  }
+}
 
-    // Supabase 쿼리로 데이터 가져오기
+export async function POST(request: Request) {
+  const { messages, pdfContent } = await request.json();
+  const lastUserMessage = messages.findLast((msg: any) => msg.role === 'user')?.content || '';
+  const ownerId = process.env.NEXT_PUBLIC_OWNER_ID;
+
+  try {
+    // owner_id로 필터링하여 해당 소유자의 데이터만 가져오기
     const [{ data: projects }, { data: experiences }, { data: owner }] = await Promise.all([
-      supabase.from('projects').select('*'),
-      supabase.from('experiences').select('*'),
-      supabase.from('owners').select('*').single()
+      supabase
+        .from('projects')
+        .select('*')
+        .eq('owner_id', ownerId),  // owner_id로 필터링
+      supabase
+        .from('experiences')
+        .select('*')
+        .eq('owner_id', ownerId),  // owner_id로 필터링
+      supabase
+        .from('owners')
+        .select('*')
+        .eq('owner_id', ownerId)   // owner_id로 필터링
+        .single()
     ]);
+
+    // 데이터가 없는 경우 처리
+    if (!owner) {
+      throw new Error('Owner not found');
+    }
 
     const projectInfo = (projects || [])
       .map((p: Project) => `- ${p.title}: ${p.description} (기술 스택: ${p.tech_stack.join(', ')})`)
@@ -116,7 +153,7 @@ export async function POST(req: Request) {
       .join('\n');
 
     const ownerInfo = owner
-      ? `이름: ${owner.name}\n나이: ${owner.age}\n취미: ${owner.hobbies.join(', ')}\n가치관: ${owner.values}\n나라: ${owner.country}\n생년월일: ${owner.birth}`
+      ? `이름: ${owner.name}\n나이: ${owner.age}\n취미: ${owner.hobbies.join(', ')}\n가치관: ${owner.values}\n나라: ${owner.country}\n생년월일: ${owner.birth}\nowner_id: ${owner.owner_id}`
       : '';
 
     // 관련 PDF 내용 검색
@@ -147,15 +184,19 @@ ${projectInfo}`;
       ],
     });
 
+    // 채팅 내역 저장
+    await supabase.from('chat_history').insert({
+      role: 'user',
+      content: lastUserMessage,
+      owner_id: ownerId
+    });
+
     return new Response(
       JSON.stringify({ response: response.choices[0].message.content }),
       { headers: { 'Content-Type': 'application/json' } },
     );
   } catch (error) {
     console.error('Error in chat route:', error);
-    return new Response(JSON.stringify({ error: 'An error occurred' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(JSON.stringify({ error: 'An error occurred' }), { status: 500 });
   }
 }
