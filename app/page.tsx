@@ -209,6 +209,22 @@ return (
       html {
         scroll-behavior: smooth;
       }
+      .swiper-container {
+        overflow: hidden;
+        touch-action: pan-y;
+      }
+      
+      .swiper-slide {
+        touch-action: pan-y;
+        height: auto;
+      }
+
+      @media (max-width: 640px) {
+        .swiper-button-next,
+        .swiper-button-prev {
+          display: none;
+        }
+      }
     `}</style>
     <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 fixed top-0 left-0 right-0 z-50">
       <div className="max-w-screen-xl mx-auto px-4">
@@ -339,50 +355,74 @@ return (
                 modules={[Navigation, Pagination, Autoplay]}
                 spaceBetween={20}
                 slidesPerView={1}
-                navigation={true}
+                navigation={{
+                  enabled: true,
+                  nextEl: '.swiper-button-next',
+                  prevEl: '.swiper-button-prev',
+                }}
                 pagination={{ 
                   clickable: true,
-                  dynamicBullets: true
+                  dynamicBullets: true,
+                  enabled: true
                 }}
                 loop={true}
                 autoplay={{
                   delay: 3000,
                   disableOnInteraction: false,
+                  pauseOnMouseEnter: true
                 }}
+                touchEventsTarget="wrapper"
+                simulateTouch={true}
+                touchRatio={1}
+                grabCursor={true}
+                touchStartPreventDefault={false}
+                touchMoveStopPropagation={true}
                 breakpoints={{
                   // 모바일
                   320: {
                     slidesPerView: 1,
                     spaceBetween: 10,
-                    navigation: false // 모바일에서는 네비게이션 버튼 숨김
+                    navigation: {
+                      enabled: false
+                    }
                   },
                   // 태블릿
                   640: {
                     slidesPerView: 2,
                     spaceBetween: 20,
-                    navigation: true
+                    navigation: {
+                      enabled: true
+                    }
                   },
                   // 데스크탑
                   1024: {
                     slidesPerView: 3,
                     spaceBetween: 30,
-                    navigation: true
+                    navigation: {
+                      enabled: true
+                    }
                   }
                 }}
-                className="mySwiper !px-4 sm:!px-0"
+                className="mySwiper !px-4 sm:!px-0 touch-pan-y"
                 style={{ 
                   width: '100%',
                   height: '100%',
+                  '--swiper-theme-color': '#000',
                   '--swiper-pagination-color': '#000',
                   '--swiper-pagination-bullet-inactive-color': '#999',
-                  '--swiper-pagination-bullet-inactive-opacity': '0.5'
+                  '--swiper-pagination-bullet-inactive-opacity': '0.5',
+                  '--swiper-navigation-color': '#000',
+                  '--swiper-navigation-size': '25px'
                 } as React.CSSProperties}
               >
                 {posts.map((post) => (
-                  <SwiperSlide key={post.id}>
+                  <SwiperSlide 
+                    key={post.id}
+                    className="touch-pan-y"
+                  >
                     <div
                       onClick={() => handlePostClick(post.id)}
-                      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-105 h-full"
+                      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-105 h-full touch-pan-y"
                     >
                       <div className="relative h-48">
                         <Image
