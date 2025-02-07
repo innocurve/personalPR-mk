@@ -333,30 +333,52 @@ return (
               </h2>
               <Swiper
                 modules={[Navigation, Pagination, Autoplay]}
-                spaceBetween={30}
+                spaceBetween={20}
                 slidesPerView={1}
-                navigation
-                pagination={{ clickable: true }}
+                navigation={true}
+                pagination={{ 
+                  clickable: true,
+                  dynamicBullets: true
+                }}
                 loop={true}
                 autoplay={{
                   delay: 3000,
                   disableOnInteraction: false,
                 }}
                 breakpoints={{
+                  // 모바일
+                  320: {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                    navigation: false // 모바일에서는 네비게이션 버튼 숨김
+                  },
+                  // 태블릿
                   640: {
                     slidesPerView: 2,
+                    spaceBetween: 20,
+                    navigation: true
                   },
+                  // 데스크탑
                   1024: {
                     slidesPerView: 3,
-                  },
+                    spaceBetween: 30,
+                    navigation: true
+                  }
                 }}
-                className="mySwiper"
+                className="mySwiper !px-4 sm:!px-0"
+                style={{ 
+                  width: '100%',
+                  height: '100%',
+                  '--swiper-pagination-color': '#000',
+                  '--swiper-pagination-bullet-inactive-color': '#999',
+                  '--swiper-pagination-bullet-inactive-opacity': '0.5'
+                } as React.CSSProperties}
               >
                 {posts.map((post) => (
                   <SwiperSlide key={post.id}>
                     <div
                       onClick={() => handlePostClick(post.id)}
-                      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-105"
+                      className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition-transform duration-300 hover:scale-105 h-full"
                     >
                       <div className="relative h-48">
                         <Image
@@ -364,11 +386,12 @@ return (
                           alt={post.title[language]}
                           fill
                           style={{ objectFit: 'cover' }}
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                       </div>
                       <div className="p-4">
-                        <h3 className="text-xl font-semibold mb-2">{post.title[language]}</h3>
-                        <p className="text-gray-600 mb-2">{post.description[language]}</p>
+                        <h3 className="text-xl font-semibold mb-2 line-clamp-1">{post.title[language]}</h3>
+                        <p className="text-gray-600 mb-2 line-clamp-3">{post.description[language]}</p>
                         <div className="flex justify-between items-center text-sm text-gray-500">
                           <span>{post.date}</span>
                           <span>{translate('views', language)}: {post.hit || 0}</span>
