@@ -210,7 +210,7 @@ return (
         scroll-behavior: smooth;
       }
     `}</style>
-    <header className="bg-white py-4 px-6 fixed top-0 left-0 right-0 z-50">
+    <header className="bg-white py-4 px-6 fixed top-0 left-0 right-0 z-50 h-20 shadow-sm">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
           <Image 

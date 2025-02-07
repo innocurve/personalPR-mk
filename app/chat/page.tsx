@@ -206,18 +206,17 @@ export default function ChatPage() {
   };
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      <div className={`border-b ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'}`}>
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      <div className={`fixed top-0 left-0 right-0 z-50 border-b ${isDarkMode ? 'bg-gray-900 border-gray-700' : 'bg-white'}`}>
         <div className="max-w-screen-xl mx-auto px-4">
           <div className="flex items-center justify-between py-4">
-        
             <Navigation language={language} />
           </div>
         </div>
       </div>
 
-      <div className={`max-w-3xl mx-auto shadow-sm min-h-[calc(100vh-80px)] ${
-        isDarkMode ? 'bg-gray-800 text-white' : 'bg-white'
+      <div className={`max-w-3xl mx-auto shadow-sm min-h-[calc(100vh-80px)] pt-20 ${
+        isDarkMode ? 'bg-gray-900 text-white' : 'bg-white'
       }`}>
         <header className={`flex items-center px-4 py-3 border-b ${
           isDarkMode ? 'border-gray-700' : ''
