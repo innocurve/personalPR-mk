@@ -365,11 +365,12 @@ return (
                   dynamicBullets: true,
                   enabled: true
                 }}
-                loop={true}
+                loop={posts.length > 1}
                 autoplay={{
                   delay: 3000,
                   disableOnInteraction: false,
-                  pauseOnMouseEnter: true
+                  pauseOnMouseEnter: true,
+                  stopOnLastSlide: false
                 }}
                 touchEventsTarget="wrapper"
                 simulateTouch={true}
@@ -378,29 +379,29 @@ return (
                 touchStartPreventDefault={false}
                 touchMoveStopPropagation={true}
                 breakpoints={{
-                  // 모바일
                   320: {
                     slidesPerView: 1,
                     spaceBetween: 10,
                     navigation: {
                       enabled: false
-                    }
+                    },
+                    slidesPerGroup: 1
                   },
-                  // 태블릿
                   640: {
-                    slidesPerView: 2,
+                    slidesPerView: Math.min(2, posts.length),
                     spaceBetween: 20,
                     navigation: {
                       enabled: true
-                    }
+                    },
+                    slidesPerGroup: 1
                   },
-                  // 데스크탑
                   1024: {
-                    slidesPerView: 3,
+                    slidesPerView: Math.min(3, posts.length),
                     spaceBetween: 30,
                     navigation: {
                       enabled: true
-                    }
+                    },
+                    slidesPerGroup: 1
                   }
                 }}
                 className="mySwiper !px-4 sm:!px-0 touch-pan-y"
