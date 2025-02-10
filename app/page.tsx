@@ -378,7 +378,8 @@ return (
                               display: '-webkit-box',
                               WebkitBoxOrient: 'vertical',
                               WebkitLineClamp: '2',
-                              maxHeight: '3rem'
+                              minHeight: '3.5rem',
+                              lineHeight: '1.5rem'
                             }}
                         >{post.title[language]}</h3>
                         <p className="text-gray-600 text-sm mb-3 overflow-hidden"
@@ -386,7 +387,8 @@ return (
                              display: '-webkit-box',
                              WebkitBoxOrient: 'vertical',
                              WebkitLineClamp: '3',
-                             minHeight: '3rem'
+                             minHeight: '3rem',
+                             lineHeight: '1.25rem'
                            }}
                         >{post.description[language]}</p>
                       </div>
