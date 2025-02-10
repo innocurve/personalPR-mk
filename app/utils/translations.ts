@@ -135,12 +135,6 @@ export const translations: TranslationDictionary = {
     ja: '詳細を見る',
     zh: '查看更多',
   },
-  views: {
-    ko: '조회수',
-    en: 'Views',
-    ja: '閲覧数',
-    zh: '浏览量',
-  },
   allRightsReserved: {
     ko: '모든 권리 보유.',
     en: 'All rights reserved.',

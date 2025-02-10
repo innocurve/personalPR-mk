@@ -9,7 +9,6 @@ export interface PostData {
     zh: string;
   };
   date: string;
-  hit: number;
   image: string;
   description: {
     ko: string;
@@ -17,6 +16,7 @@ export interface PostData {
     ja: string;
     zh: string;
   };
+  tags?: string[];
   content?: { [key in Language]: string };
   gallery?: Array<{
     id: number;
