@@ -3,6 +3,7 @@
 import { Card } from "@/components/ui/card"
 import { Language, translate } from '../utils/translations'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 interface ContactOptionsProps {
   language: Language
@@ -100,4 +101,3 @@ const ContactOptions: React.FC<ContactOptionsProps> = ({ language }) => {
 }
 
 export default ContactOptions
-

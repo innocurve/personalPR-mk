@@ -32,7 +32,6 @@ const [posts, setPosts] = useState<PostData[]>([
       ja: '(社)大韓青年を世界へ 未来戦略フォーラム開催',
       zh: '(社)韩国青年走向世界协会举办未来战略论坛',
     },
-    date: '2024.12.3',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%EB%AF%B8%EB%9E%98%EC%A0%84%EB%9E%B5%ED%8F%AC%EB%9F%BC.jpg-lobjD33dLn9HHvFaqwYC57KhFIHDJb.jpeg',
     description: {
       ko: '기술혁신의 시대속에서 청년들의 미래를 위한 전략을 논의하는 포럼을 개최합니다.',
@@ -40,7 +39,12 @@ const [posts, setPosts] = useState<PostData[]>([
       ja: '技術革新の時代における若者の未来のための戦略を議論するフォーラムを開催します。',
       zh: '举办论坛，讨论技术创新时代青年未来的战略。',
     },
-    tags: ['#청년미래', '#기술혁신', '#전략포럼', '#글로벌비전']
+    tags: {
+      ko: ['#청년미래', '#기술혁신', '#전략포럼', '#글로벌비전'],
+      en: ['#YouthFuture', '#TechInnovation', '#StrategyForum', '#GlobalVision'],
+      ja: ['#若者の未来', '#技術革新', '#戦略フォーラム', '#グローバルビジョン'],
+      zh: ['#青年未来', '#技术创新', '#战略论坛', '#全球愿景']
+    }
   },
   { 
     id: 2, 
@@ -50,7 +54,6 @@ const [posts, setPosts] = useState<PostData[]>([
       ja: 'イノカーブ InnoCard',
       zh: 'InnoCurve InnoCard',
     },
-    date: '2024-03-01',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%EC%A0%9C%EB%AA%A9%20%EC%97%86%EC%9D%8C%20(300%20x%20200%20px)-YqEdcEhhDJYNijbTp5DIM9uER4sZNS.png',
     description: {
       ko: '종이 명함을 넘어 자신만의 웹사이트로 나를 표현하고, 연결하며, 확장할 수 있는 AI 전자명함 서비스를 소개합니다. 당신의 이야기를 담고, 네트워크를 스마트하게 이어주는 디지털 공간을 만나보세요.',
@@ -58,7 +61,12 @@ const [posts, setPosts] = useState<PostData[]>([
       ja: '紙の名刺を超え、自分だけのウェブサイトで自己表現、つながり、拡張できるAIデジタル名刺サービスをご紹介します。あなたのストーリーを込め、ネットワークをスマートにつなぐデジタル空間をご体験ください。',
       zh: '介绍一款超越纸质名片的AI电子名片服务，您可以通过自己的网站来表达、连接和扩展自己。探索一个承载您的故事并智能连接您的网络的数字空间。',
     },
-    tags: ['#전자명함', '#개인브랜딩', '#네트워크확장', '#AI솔루션']
+    tags: {
+      ko: ['#전자명함', '#개인브랜딩', '#네트워크확장', '#AI솔루션'],
+      en: ['#DigitalCard', '#PersonalBranding', '#NetworkExpansion', '#AISolution'],
+      ja: ['#デジタル名刺', '#パーソナルブランディング', '#ネットワーク拡張', '#AIソリューション'],
+      zh: ['#电子名片', '#个人品牌', '#网络扩展', '#AI解决方案']
+    }
   },
   { 
     id: 3, 
@@ -68,7 +76,6 @@ const [posts, setPosts] = useState<PostData[]>([
       ja: 'イノカーブ AIConnect',
       zh: 'InnoCurve AIConnect',
     },
-    date: '2024-02-15',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/INNOCURVE-UEJ6P4SmjI6dvCbd6jXEsOFWMdMjqW.png',
     description: {
       ko: '기술 발전의 혜택을 누구나 누릴 수 있도록, 각 산업별 맞춤형 AI 컨설팅과 최적화된 솔루션을 제공합니다.',
@@ -76,7 +83,12 @@ const [posts, setPosts] = useState<PostData[]>([
       ja: '技術発展の恩恵を誰もが享受できるよう、各産業別にカスタマイズされたAIコンサルティングと最適化されたソリューションを提供します。',
       zh: '我们为各个行业提供定制的AI咨询和优化的解决方案，以确保每个人都能享受到技术进步的益处。',
     },
-    tags: ['#AI컨설팅', '#맞춤형솔루션', '#기술혁신', '#산업최적화']
+    tags: {
+      ko: ['#AI컨설팅', '#맞춤형솔루션', '#기술혁신', '#산업최적화'],
+      en: ['#AIConsulting', '#CustomSolution', '#TechInnovation', '#IndustryOptimization'],
+      ja: ['#AIコンサルティング', '#カスタマイズソリューション', '#技術革新', '#産業最適化'],
+      zh: ['#AI咨询', '#定制解决方案', '#技术创新', '#产业优化']
+    }
   },
   { 
     id: 4, 
@@ -86,7 +98,6 @@ const [posts, setPosts] = useState<PostData[]>([
       ja: 'イノカーブマーケティング',
       zh: 'InnoCurve营销',
     },
-    date: '2024-01-10',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%EC%A0%9C%EB%AA%A9%20%EC%97%86%EC%9D%8C%20(300%20x%20200%20px)%20(1)-NxaNNp6obIPVIlOTroVTYrMKQeS8Z2.png',
     description: {
       ko: 'AI를 활용한 홈페이지, 이미지, 영상 등 다양한 디지털 콘텐츠 제작을 통해 비용은 효율적으로 절감하고, 최상의 퀄리티로 효과적인 홍보를 지원합니다.',
@@ -94,7 +105,12 @@ const [posts, setPosts] = useState<PostData[]>([
       ja: 'AIを活用したホームページ、画像、動画など、さまざまなデジタルコンテンツの制作を通じてコストを効率的に削減し、最高の品質で効果的なプロモーションをサポートします。',
       zh: '通过制作AI驱动的网站、图像和视频等各种数字内容，有效降低成本，并以最高质量支持有效的推广。',
     },
-    tags: ['#AI마케팅', '#디지털콘텐츠', '#비용효율화', '#퀄리티향상']
+    tags: {
+      ko: ['#AI마케팅', '#디지털콘텐츠', '#비용효율화', '#퀄리티향상'],
+      en: ['#AIMarketing', '#DigitalContent', '#CostEfficiency', '#QualityImprovement'],
+      ja: ['#AIマーケティング', '#デジタルコンテンツ', '#コスト効率化', '#品質向上'],
+      zh: ['#AI营销', '#数字内容', '#成本效率', '#质量提升']
+    }
   },
   {
     id: 5,
@@ -104,7 +120,6 @@ const [posts, setPosts] = useState<PostData[]>([
       ja: '金剛シャロン',
       zh: '金刚沙龙',
     },
-    date: '2024-01-05',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%EC%A0%9C%EB%AA%A9%20%EC%97%86%EB%8A%94%20%EB%94%94%EC%9E%90%EC%9D%B8-FGdqIT95etjPBkIXDiG4NcAKWr8gZC.png',
     description: {
       ko: '40년의 전통과 장인 정신으로 빚어낸 유리 공예의 아름다움, 금강샤론그라스는 고급스러운 디자인과 뛰어난 품질로 담금주의 깊은 맛과 멋을 완성하는 대한민국 대표 유리 용기 브랜드입니다.',
@@ -112,10 +127,14 @@ const [posts, setPosts] = useState<PostData[]>([
       ja: '40年の伝統と職人精神で作り上げたガラス工芸の美しさ、金剛シャロングラスは高級なデザインと優れた品質で漬け込み酒の深い味わいと風情を完成させる韓国を代表するガラス容器ブランドです。',
       zh: '拥有40年传统和工艺精神的金刚沙龙玻璃，以其奢华的设计和卓越的品质，完成了韩国顶级玻璃容器品牌的深厚口感和格调。',
     },
-    tags: ['#담금주', '#프리미엄디자인', '#장인정신', '#유리공예']
-  },
-]);
-
+    tags: {
+      ko: ['#담금주', '#프리미엄디자인', '#장인정신', '#유리공예'],
+      en: ['#LiquorContainer', '#PremiumDesign', '#Craftsmanship', '#GlassArt'],
+      ja: ['#漬け込み酒', '#プレミアムデザイン', '#職人精神', '#ガラス工芸'],
+      zh: ['#浸泡酒', '#高端设计', '#工匠精神', '#玻璃工艺']
+    }
+  }
+]); 
 const router = useRouter();
 
 // 초기 데이터 로드
@@ -391,6 +410,13 @@ return (
                              lineHeight: '1.25rem'
                            }}
                         >{post.description[language]}</p>
+                        <div className="flex flex-wrap gap-2 mt-auto">
+                          {post.tags[language].map((tag, index) => (
+                            <span key={index} className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full hover:bg-blue-100 transition-colors duration-200">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </SwiperSlide>

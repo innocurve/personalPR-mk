@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { LanguageProvider } from './contexts/LanguageContext';
 import { Inter } from 'next/font/google'
+import { Toaster } from 'sonner'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -55,6 +56,25 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased ${inter.className}`}
       >
+        <Toaster 
+          position="bottom-center"
+          theme="light"
+          richColors
+          toastOptions={{
+            duration: 2000,
+            className: 'my-toast',
+            style: {
+              background: 'white',
+              border: '1px solid #e2e8f0',
+              padding: '10px 16px',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+              fontSize: '0.9rem',
+              fontWeight: '500',
+              borderRadius: '12px',
+              marginBottom: '5rem'
+            }
+          }}
+        />
         <LanguageProvider>
           {children}
         </LanguageProvider>

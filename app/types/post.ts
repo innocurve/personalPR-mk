@@ -8,15 +8,20 @@ export interface PostData {
     ja: string;
     zh: string;
   };
-  date: string;
   image: string;
+  images?: string[];
   description: {
     ko: string;
     en: string;
     ja: string;
     zh: string;
   };
-  tags?: string[];
+  tags: {
+    ko: string[];
+    en: string[];
+    ja: string[];
+    zh: string[];
+  };
   content?: { [key in Language]: string };
   gallery?: Array<{
     id: number;

@@ -99,6 +99,105 @@ async function searchRelevantChunks(question: string): Promise<string> {
   }
 }
 
+// 이름에서 다른 사람 언급 추출 함수
+async function extractMentionedPerson(message: string): Promise<string | null> {
+  // 다양한 이름 패턴 처리
+  const patterns = [
+    // 성+이름 패턴 (예: 이재권, 김철수)
+    /([가-힣]{2,4})(?:님|씨)?/,
+    // 이름만 + 이 패턴 (예: 재권이, 철수야)
+    /([가-힣]{2,3})이(?:가|는|께|야|님|씨)?/,
+    // 성을 제외한 이름만 (예: 재권, 철수)
+    /([가-힣]{2,3})/
+  ];
+
+  for (const pattern of patterns) {
+    const match = message.match(pattern);
+    if (match) {
+      // 기본적인 조사 제거
+      const name = match[1].replace(/[은는이가을를의]$/, '');
+      
+      // 이름만 있는 경우 데이터베이스에서 전체 이름 찾기
+      if (name.length === 2) {
+        const fullName = await findFullName(name);
+        return fullName;
+      }
+      
+      return name;
+    }
+  }
+  
+  return null;
+}
+
+// 부분 이름으로 전체 이름 찾기
+async function findFullName(partialName: string): Promise<string | null> {
+  try {
+    const { data: owners } = await supabase
+      .from('owners')
+      .select('name')
+      .ilike('name', `%${partialName}`);
+
+    if (owners && owners.length > 0) {
+      // 가장 짧은 이름을 반환 (가장 정확한 매치일 가능성이 높음)
+      return owners.sort((a, b) => a.name.length - b.name.length)[0].name;
+    }
+  } catch (error) {
+    console.error('Error finding full name:', error);
+  }
+  
+  return partialName;
+}
+
+// 다른 사람의 정보 조회 함수
+async function getPersonInfo(name: string) {
+  try {
+    // 이름으로 owners 테이블 검색 (부분 이름 매칭 개선)
+    const { data: ownerData, error } = await supabase
+      .from('owners')
+      .select('*')
+      .or(`name.ilike.%${name}%,name.ilike.%${name.replace(/이$/, '')}%`)
+      .single();
+
+    if (error || !ownerData) {
+      console.log(`No owner found with name: ${name}`);
+      return null;
+    }
+
+    // 해당 owner의 projects와 experiences 정보 조회
+    const [{ data: projects }, { data: experiences }] = await Promise.all([
+      supabase
+        .from('projects')
+        .select('*')
+        .eq('owner_id', ownerData.owner_id),
+      supabase
+        .from('experiences')
+        .select('*')
+        .eq('owner_id', ownerData.owner_id)
+    ]);
+
+    const personProjectInfo = (projects || [])
+      .map((p: Project) => `- ${p.title}: ${p.description} (기술 스택: ${p.tech_stack.join(', ')})`)
+      .join('\n');
+
+    const personExperienceInfo = (experiences || [])
+      .map((e: Experience) => `- ${e.company}의 ${e.position} (${e.period})\n  ${e.description}`)
+      .join('\n');
+
+    const honorific = ownerData.name;
+
+    return {
+      owner: ownerData,
+      projectInfo: personProjectInfo,
+      experienceInfo: personExperienceInfo,
+      honorific
+    };
+  } catch (error) {
+    console.error('Error fetching person info:', error);
+    return null;
+  }
+}
+
 export async function GET(request: Request) {
   const ownerId = process.env.NEXT_PUBLIC_OWNER_ID;
 
@@ -117,29 +216,36 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const { messages, pdfContent } = await request.json();
+  const { messages } = await request.json();
   const lastUserMessage = messages.findLast((msg: any) => msg.role === 'user')?.content || '';
   const ownerId = process.env.NEXT_PUBLIC_OWNER_ID;
 
   try {
+    // 메시지에서 언급된 사람 찾기
+    const mentionedPerson = await extractMentionedPerson(lastUserMessage);
+    let mentionedPersonInfo = null;
+    
+    if (mentionedPerson) {
+      mentionedPersonInfo = await getPersonInfo(mentionedPerson);
+    }
+
     // owner_id로 필터링하여 해당 소유자의 데이터만 가져오기
     const [{ data: projects }, { data: experiences }, { data: owner }] = await Promise.all([
       supabase
         .from('projects')
         .select('*')
-        .eq('owner_id', ownerId),  // owner_id로 필터링
+        .eq('owner_id', ownerId),
       supabase
         .from('experiences')
         .select('*')
-        .eq('owner_id', ownerId),  // owner_id로 필터링
+        .eq('owner_id', ownerId),
       supabase
         .from('owners')
         .select('*')
-        .eq('owner_id', ownerId)   // owner_id로 필터링
+        .eq('owner_id', ownerId)
         .single()
     ]);
 
-    // 데이터가 없는 경우 처리
     if (!owner) {
       throw new Error('Owner not found');
     }
@@ -156,13 +262,10 @@ export async function POST(request: Request) {
       ? `이름: ${owner.name}\n나이: ${owner.age}\n취미: ${owner.hobbies.join(', ')}\n가치관: ${owner.values}\n나라: ${owner.country}\n생년월일: ${owner.birth}\nowner_id: ${owner.owner_id}`
       : '';
 
-    // 관련 PDF 내용 검색
-    const relevantPdfContent = await searchRelevantChunks(lastUserMessage);
-
     // 시스템 프롬프트 작성
     let systemPrompt = `당신은 정민기의 AI 클론입니다. 아래 정보를 바탕으로 1인칭으로 자연스럽게 대화하세요.
     현재 시각은 ${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })} 입니다.
-  
+
 기본 정보:
 ${ownerInfo}
 
@@ -170,10 +273,31 @@ ${ownerInfo}
 ${experienceInfo}
 
 프로젝트:
-${projectInfo}`;
+${projectInfo}
 
-    if (relevantPdfContent) {
-      systemPrompt += `\n\n관련 문서 내용:\n${relevantPdfContent}`;
+답변 시 주의사항:
+- 다른 분들을 언급할 때는 이름 뒤에 "님"을 붙여서 호칭 (예: "이재권님", "김철수님")
+- 항상 정중하고 예의 바른 어투 사용
+- 다른 사람에 대해 질문받았을 때는 현재 직책/역할만 간단히 답변
+- 예시 답변: "이재권님은 저희 회사의 CTO이십니다."`;
+
+    // 다른 사람의 정보가 있다면 시스템 프롬프트에 추가 (비공개 정보로)
+    if (mentionedPersonInfo) {
+      systemPrompt += `\n\n# 비공개 참조 정보 (추가 질문이 있을 때만 사용)
+${mentionedPerson}${mentionedPersonInfo.honorific}의 정보:
+기본 정보:
+이름: ${mentionedPersonInfo.owner.name}${mentionedPersonInfo.honorific}
+나이: ${mentionedPersonInfo.owner.age}
+취미: ${mentionedPersonInfo.owner.hobbies.join(', ')}
+가치관: ${mentionedPersonInfo.owner.values}
+${mentionedPersonInfo.owner.country ? `나라: ${mentionedPersonInfo.owner.country}` : ''}
+${mentionedPersonInfo.owner.birth ? `생년월일: ${mentionedPersonInfo.owner.birth}` : ''}
+
+경력:
+${mentionedPersonInfo.experienceInfo}
+
+프로젝트:
+${mentionedPersonInfo.projectInfo}`;
     }
 
     const response = await openai.chat.completions.create({

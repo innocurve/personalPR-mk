@@ -232,10 +232,12 @@ export default function ChatPage() {
           <div className="flex-1 flex flex-col items-center">
             <div className="w-16 h-16 relative rounded-full overflow-hidden mb-2">
               <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JTSehNl2EKBQk7qe2rhkhmUTpPGYrW.png"
+                src="/profile.png"
                 alt={translate('name', language)}
-                layout="fill"
+                fill
+                sizes="(max-width: 768px) 64px, 96px"
                 className="object-cover"
+                priority
               />
             </div>
             <span className="text-lg font-medium">{translate('name', language)}{translate('cloneTitle', language)}</span>
