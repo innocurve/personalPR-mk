@@ -144,13 +144,10 @@ useEffect(() => {
 
   const loadInitialData = () => {
     try {
-      const storedPosts = localStorage.getItem('posts');
-      if (!storedPosts) {
-        setPosts(initialPosts);
-        localStorage.setItem('posts', JSON.stringify(initialPosts));
-      } else {
-        setPosts(JSON.parse(storedPosts));
-      }
+      // 로컬스토리지 초기화 - 항상 최신 데이터 사용
+      localStorage.removeItem('posts');
+      setPosts(initialPosts);
+      localStorage.setItem('posts', JSON.stringify(initialPosts));
     } catch (error) {
       console.error('Error loading posts:', error);
       setPosts(initialPosts);

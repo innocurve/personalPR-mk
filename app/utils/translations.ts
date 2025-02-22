@@ -82,10 +82,10 @@ export const translations: TranslationDictionary = {
     zh: '教育',
   },
   educationDescription: {
-    ko: '동국대학교 범죄학 석사\n연세대학교 AI리더십 최고위',
-    en: "Master's in Criminology, Dongguk University\nAdvanced Leadership in AI, Yonsei University",
-    ja: '東国大学 犯罪学 修士\n延世大学 AIリーダーシップ 最高位課程',
-    zh: '东国大学犯罪学硕士\n延世大学AI领导力高级课程',
+    ko: 'KAIST Chief AI Officer Program\n연세대학교 AI리더십 최고위\n동국대학교 범죄학 석사',
+    en: "KAIST Chief AI Officer Program\nAdvanced Leadership in AI, Yonsei University\nMaster's in Criminology, Dongguk University",
+    ja: 'KAIST 最高位 AI リーダーシップ プログラム\n延世大学 AIリーダーシップ 最高位課程\n東国大学 犯罪学 修士',
+    zh: 'KAIST最高位AI领导力课程\n延世大学AI领导力高级课程\n东国大学犯罪学硕士',
   },
   field: {
     ko: '분야',
