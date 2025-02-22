@@ -169,7 +169,8 @@ const ChatBot = ({ isOpen: externalIsOpen, onOpenChange }: ChatBotProps) => {
       // PDF 내용이 있으면 시스템 메시지에 추가
       const systemMessage: Message | null = pdfContent ? {
         role: 'system',
-        content: `다음은 업로드된 PDF 파일의 내용입니다:\n\n${pdfContent}\n\n이 내용을 참고하여 사용자의 질문에 답변해주세요.`
+        content: `다음은 업로드된 PDF 파일의 내용입니다:\n\n${pdfContent}\n\n이 내용을 참고하여 사용자의 질문에 답변해주세요.`,
+        timestamp: Date.now()
       } : null;
 
       const response = await fetch('/api/chat', {
@@ -191,12 +192,17 @@ const ChatBot = ({ isOpen: externalIsOpen, onOpenChange }: ChatBotProps) => {
       const data = await response.json();
       
       // 봇 응답 추가
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: data.response,
+        timestamp: Date.now()
+      }]);
     } catch (error) {
       console.error('Error:', error);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: '죄송합니다. 오류가 발생했습니다.'
+        content: '죄송합니다. 오류가 발생했습니다.',
+        timestamp: Date.now()
       }]);
     } finally {
       setIsLoading(false);
@@ -281,7 +287,7 @@ const ChatBot = ({ isOpen: externalIsOpen, onOpenChange }: ChatBotProps) => {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full overflow-hidden bg-white">
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JTSehNl2EKBQk7qe2rhkhmUTpPGYrW.png"
+                  src="/profile.png"
                   alt="ChatBot Profile"
                   width={40}
                   height={40}
@@ -300,33 +306,6 @@ const ChatBot = ({ isOpen: externalIsOpen, onOpenChange }: ChatBotProps) => {
                 title="뒤로가기"
               >
                 ←
-              </button>
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={handleFileUpload}
-                ref={fileInputRef}
-                className="hidden"
-              />
-              <button 
-                onClick={() => fileInputRef.current?.click()}
-                className="text-white hover:text-gray-200 p-2"
-                title="PDF 업로드"
-              >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  strokeWidth={1.5} 
-                  stroke="currentColor" 
-                  className="w-5 h-5"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" 
-                  />
-                </svg>
               </button>
               <button 
                 onClick={toggleDarkMode}
@@ -412,4 +391,3 @@ const ChatBot = ({ isOpen: externalIsOpen, onOpenChange }: ChatBotProps) => {
 };
 
 export default ChatBot;
-

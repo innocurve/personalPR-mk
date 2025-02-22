@@ -354,7 +354,7 @@ return (
             <div className="container mx-auto px-4">
               <Swiper
                 modules={[Navigation, Pagination, Autoplay]}
-                spaceBetween={30}
+                spaceBetween={20}
                 slidesPerView={1}
                 navigation
                 pagination={{ clickable: true }}
@@ -368,29 +368,29 @@ return (
                 breakpoints={{
                   0: {
                     slidesPerView: 1,
-                    spaceBetween: 20,
+                    spaceBetween: 10,
                   },
                   640: {
                     slidesPerView: Math.min(2, posts.length),
-                    spaceBetween: 30,
+                    spaceBetween: 20,
                   },
                   1024: {
                     slidesPerView: Math.min(3, posts.length),
-                    spaceBetween: 30,
+                    spaceBetween: 20,
                   }
                 }}
-                className="swiper-container !pb-12 !overflow-visible"
+                className="swiper-container !pb-12"
               >
                 {posts.map((post) => (
                   <SwiperSlide 
                     key={post.id}
-                    className="h-auto"
+                    className="h-[340px]"
                   >
                     <div
                       onClick={() => handlePostClick(post.id)}
-                      className="bg-white rounded-lg shadow-md cursor-pointer transform transition-all duration-300 hover:scale-105 h-full flex flex-col"
+                      className="bg-white rounded-lg shadow-md cursor-pointer transform transition-all duration-300 hover:scale-105 h-[340px] flex flex-col"
                     >
-                      <div className="relative h-48 rounded-t-lg overflow-hidden">
+                      <div className="relative h-36 rounded-t-lg overflow-hidden">
                         <Image
                           src={post.image}
                           alt={post.title[language]}
@@ -399,14 +399,26 @@ return (
                         />
                       </div>
                       <div className="p-4 flex flex-col flex-1">
-                        <h3 className="text-lg font-semibold mb-2 line-clamp-2 min-h-[3.5rem]">
-                          {post.title[language]}
-                        </h3>
-                        <p className="text-gray-600 text-sm mb-3 line-clamp-3 min-h-[4.5rem]">
-                          {post.description[language]}
-                        </p>
+                        <h3 className="text-lg font-semibold mb-2 overflow-hidden"
+                            style={{
+                              display: '-webkit-box',
+                              WebkitBoxOrient: 'vertical',
+                              WebkitLineClamp: '2',
+                              minHeight: '3.5rem',
+                              lineHeight: '1.5rem'
+                            }}
+                        >{post.title[language]}</h3>
+                        <p className="text-gray-600 text-sm mb-3 overflow-hidden"
+                           style={{
+                             display: '-webkit-box',
+                             WebkitBoxOrient: 'vertical',
+                             WebkitLineClamp: '3',
+                             minHeight: '3rem',
+                             lineHeight: '1.25rem'
+                           }}
+                        >{post.description[language]}</p>
                         <div className="flex flex-wrap gap-2 mt-auto">
-                          {post.tags[language].map((tag, index) => (
+                          {post.tags && post.tags[language] && post.tags[language].map((tag, index) => (
                             <span key={index} className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full hover:bg-blue-100 transition-colors duration-200">
                               {tag}
                             </span>
